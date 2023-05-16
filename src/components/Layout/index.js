@@ -267,7 +267,7 @@ function DashboardContent({children}) {
               </ListItemButton>
             </List>
             <List component="div" disablePadding>
-              <ListItemButton key="Category" href="Category" sx={{ pl: 3 }}>
+              <ListItemButton key="Category" href="category" sx={{ pl: 3 }}>
                 <ListItemIcon>
                   <StarBorder />
                 </ListItemIcon>
