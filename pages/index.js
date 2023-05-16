@@ -28,8 +28,6 @@ export default function Index() {
     
     return (
         <section>
-            
-            
-            
+            <>ini index</>
         </section>)
 }

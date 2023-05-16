@@ -248,6 +248,41 @@ function DashboardContent({children}) {
               <ChevronLeftIcon />
             </IconButton>
           </Toolbar>
+          <Divider />  
+          <List component="nav">
+            <ListItemButton key={"Master"} >
+              <ListItemIcon>
+                <InboxIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Master"} />
+              {pinjam ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+              {/* child master */}
+            <List component="div" disablePadding>
+              <ListItemButton key="User" href="user" sx={{ pl: 3 }}>
+                <ListItemIcon>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText primary="User" />
+              </ListItemButton>
+            </List>
+            <List component="div" disablePadding>
+              <ListItemButton key="Category" href="Category" sx={{ pl: 3 }}>
+                <ListItemIcon>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText primary="Kategori" />
+              </ListItemButton>
+            </List>
+            <List component="div" disablePadding>
+              <ListItemButton key="Item" href="item" sx={{ pl: 3 }}>
+                <ListItemIcon>
+                  <StarBorder />
+                </ListItemIcon>
+                <ListItemText primary="Item" />
+              </ListItemButton>
+            </List>
+          </List>
           <Divider />
           <List component="nav">
           {['Peminjaman'].map((text, index) => (
@@ -260,28 +295,29 @@ function DashboardContent({children}) {
                 {pinjam ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
               <Collapse in={pinjam} timeout="auto" unmountOnExit>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 3 }}>
-                  <ListItemIcon>
-                    <StarBorder />
-                  </ListItemIcon>
-                  <ListItemText primary="Pinjam" />
-                </ListItemButton>
-              </List>
-              <List component="div" disablePadding>
-                <ListItemButton sx={{ pl: 3 }}>
-                  <ListItemIcon>
-                    <StarBorder />
-                  </ListItemIcon>
-                  <ListItemText primary="Kembali" />
-                </ListItemButton>
-              </List>
+                <List component="div" disablePadding>
+                  <ListItemButton key="pinjam" href="pinjam" sx={{ pl: 3 }}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Pinjam" />
+                  </ListItemButton>
+                </List>
+                <List component="div" disablePadding>
+                  <ListItemButton key="kembali" href="kembali" sx={{ pl: 3 }}>
+                    <ListItemIcon>
+                      <StarBorder />
+                    </ListItemIcon>
+                    <ListItemText primary="Kembali" />
+                  </ListItemButton>
+                </List>
           </Collapse>
               </>
           ))}
             <Divider sx={{ my: 1 }} />
             <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            
             <ListItem key={text} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
@@ -323,9 +359,6 @@ function DashboardContent({children}) {
                  {children}
                 </Paper>
               </Grid>
-              {/* Recent Deposits */}
-              
-              {/* Recent Orders */}
               
             </Grid>
             <Copyright sx={{ pt: 4 }} />
@@ -335,102 +368,6 @@ function DashboardContent({children}) {
     </ThemeProvider>
   );
 }
-
-// function Layout({children}){
-//   const router = useRouter();
-//   const [anchorEl, setAnchorEl] = React.useState(null);
-//   const [username, setUsername ]= React.useState("");
-//   const open = Boolean(anchorEl);
-//   const handleClick = (event) => {
-//     setAnchorEl(event.currentTarget);
-//   };
- 
-//   const handleClose = () => {
-//     setAnchorEl(null);
-//   };
- 
-
-//   React.useEffect(() => {
-//     setUsername(JSON.parse(getCookie('user')).username.substring(0,1));
-//   },[username])
-
-//   return (
-//   <div> 
-//     <AppBar position="static">
-//       <Toolbar>
-//         <Button color="inherit"  onClick={() => router.back()}><ArrowBackIosNewOutlined> </ArrowBackIosNewOutlined></Button>
-//         {/* <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 0.1 }} /> */}
-//         <MenuIcon onClick={(e) => router.push("/")} />
-        
-
-//         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>PT. Baramuda Bahari</Typography>
-       
-//         <Tooltip title="Account">
-//           <IconButton
-//             onClick={(e) => handleClick(e)}
-//             size="small"
-//             sx={{ ml: 2 }}
-//             aria-controls={open ? 'account-menu' : undefined}
-//             aria-haspopup="true"
-//             aria-expanded={open ? 'true' : undefined}
-//           >
-//             <Avatar sx={{ width: 32, height: 32 }}>{username.toUpperCase()}</Avatar>
-//           </IconButton>
-//         </Tooltip>
-//         <Menu
-//           anchorEl={anchorEl}
-//           id="account-menu"
-//           open={open}
-//           onClose={handleClose}
-//           onClick={handleClose}
-//           PaperProps={{
-//             elevation: 0,
-//             sx: {
-//               overflow: 'visible',
-//               filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-//               mt: 1.5,
-//               '& .MuiAvatar-root': {
-//                 width: 32,
-//                 height: 32,
-//                 ml: -0.5,
-//                 mr: 1,
-//               },
-//               '&:before': {
-//                 content: '""',
-//                 display: 'block',
-//                 position: 'absolute',
-//                 top: 0,
-//                 right: 14,
-//                 width: 10,
-//                 height: 10,
-//                 bgcolor: 'background.paper',
-//                 transform: 'translateY(-50%) rotate(45deg)',
-//                 zIndex: 0,
-//               },
-//             },
-//           }}
-//           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-//           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-//       >
-//         <MenuItem onClick={() => {
-//               deleteCookie('user');
-//               deleteCookie('menu');
-//               router.push("/login")}}>
-//           <ListItemIcon  >
-//             <LogoutIcon fontSize="small" />
-//           </ListItemIcon>
-//           Logout
-//         </MenuItem>
-//         <Divider />
-//         </Menu>
-        
-//       </Toolbar>
-//     </AppBar>
-//       {children}
-//     <Footer />
-//   </div>
-//   )
-// }
 
 export default DashboardContent
 //export default withAuth(DashboardContent)
