@@ -182,60 +182,53 @@ const Footer = () => {
   );
 };
 
-function DashboardContent({children}) {
+const CustomBar = () => {
   const [open, setOpen] = React.useState(true);
   const [pinjam, setPinjam] = React.useState(true);
-
-  const handlePinjam = () => {
-    setPinjam(!pinjam);
-  };
-
   const handleClick = () => {
     setOpen(!open);
   };
   const toggleDrawer = () => {
     setOpen(!open);
   };
-
-  return (
-    <ThemeProvider theme={mdTheme}>
-      <Box sx={{ display: 'flex' }}>
-        <CssBaseline />
-        <AppBar style={{ background: '#212121' }} position="absolute" open={open}>
-          <Toolbar
-            sx={{
-              pr: '24px', // keep right padding when drawer closed
-            }}
-          >
-            <IconButton
-              edge="start"
-              color="inherit"
-              aria-label="open drawer"
-              onClick={toggleDrawer}
-              sx={{
-                marginRight: '36px',
-                ...(open && { display: 'none' }),
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              component="h1"
-              variant="h6"
-              color="inherit"
-              noWrap
-              sx={{ flexGrow: 1 }}
-            >
-              Dashboard
-            </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Drawer variant="permanent" open={open}>
+  const handlePinjam = () => {
+    setPinjam(!pinjam);
+  };
+  return (<><AppBar style={{ background: '#212121' }} position="absolute" open={open}>
+<Toolbar
+  sx={{
+    pr: '24px', // keep right padding when drawer closed
+  }}
+>
+  <IconButton
+    edge="start"
+    color="inherit"
+    aria-label="open drawer"
+    onClick={toggleDrawer}
+    sx={{
+      marginRight: '36px',
+      ...(open && { display: 'none' }),
+    }}
+  >
+    <MenuIcon />
+  </IconButton>
+  <Typography
+    component="h1"
+    variant="h6"
+    color="inherit"
+    noWrap
+    sx={{ flexGrow: 1 }}
+  >
+    Dashboard
+  </Typography>
+  <IconButton color="inherit">
+    <Badge badgeContent={4} color="secondary">
+      <NotificationsIcon />
+    </Badge>
+  </IconButton>
+</Toolbar>
+</AppBar>
+<Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -259,7 +252,7 @@ function DashboardContent({children}) {
             </ListItemButton>
               {/* child master */}
             <List component="div" disablePadding>
-              <ListItemButton key="User" href="user" sx={{ pl: 3 }}>
+              <ListItemButton key="User" href="/user" sx={{ pl: 3 }}>
                 <ListItemIcon>
                   <StarBorder />
                 </ListItemIcon>
@@ -296,7 +289,7 @@ function DashboardContent({children}) {
               </ListItemButton>
               <Collapse in={pinjam} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                  <ListItemButton key="pinjam" href="pinjam" sx={{ pl: 3 }}>
+                  <ListItemButton key="pinjam" href="peminjaman" sx={{ pl: 3 }}>
                     <ListItemIcon>
                       <StarBorder />
                     </ListItemIcon>
@@ -330,6 +323,40 @@ function DashboardContent({children}) {
         </List>
           </List>
         </Drawer>
+        </>
+)}
+
+function DashboardContent({children}) {
+  
+  const {asPath} = useRouter();
+  let body;
+  if (asPath.includes("peminjaman")){
+    body = children 
+  } else {
+    body =  <Grid container spacing={3}>
+    <Grid item xs={12} md={12} lg={12}>
+      <Paper
+        sx={{
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
+          
+        }}
+      >
+       {children}
+      </Paper>
+    </Grid>
+    
+  </Grid>
+  }
+
+  return (
+    <ThemeProvider theme={mdTheme}>
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <CustomBar />
+        
         <Box
           component="main"
           sx={{
@@ -344,23 +371,7 @@ function DashboardContent({children}) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={12} lg={12}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 620,
-                    
-                  }}
-                >
-                 {children}
-                </Paper>
-              </Grid>
-              
-            </Grid>
+            {body}
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
