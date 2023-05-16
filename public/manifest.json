@@ -1,0 +1,51 @@
+{
+    "theme_color": "#FFFFFF",
+    "background_color": "#FFFFFF",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "portrait",
+    "name": "Web App",
+    "short_name": "App",
+    "sw": "/public/sw.js",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "226x227"
+        },
+        {
+            "src": "/static/payment.png",
+            "sizes": "900x900",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/poApp.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/sales.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/bc25.png",
+            "sizes": "30x30",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/bc27.png",
+            "sizes": "30x30",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/bc30.png",
+            "sizes": "30x30",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/bc41.png",
+            "sizes": "30x30",
+            "type": "image/png"
+        }
+    ]
+  }
