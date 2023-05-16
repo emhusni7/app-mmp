@@ -271,7 +271,7 @@ function DashboardContent({children}) {
                 <ListItemIcon>
                   <StarBorder />
                 </ListItemIcon>
-                <ListItemText primary="Kategori" />
+                <ListItemText primary="Category" />
               </ListItemButton>
             </List>
             <List component="div" disablePadding>
