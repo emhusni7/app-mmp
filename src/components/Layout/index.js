@@ -252,7 +252,7 @@ function DashboardContent({children}) {
           <List component="nav">
           {['Peminjaman'].map((text, index) => (
             <>
-              <ListItemButton onClick={handlePinjam}>
+              <ListItemButton key={index} onClick={handlePinjam}>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
@@ -273,7 +273,7 @@ function DashboardContent({children}) {
                   <ListItemIcon>
                     <StarBorder />
                   </ListItemIcon>
-                  <ListItemText primary="Kembai" />
+                  <ListItemText primary="Kembali" />
                 </ListItemButton>
               </List>
           </Collapse>
@@ -320,7 +320,7 @@ function DashboardContent({children}) {
                     
                   }}
                 >
-                  {/* <Chart /> */}
+                 {children}
                 </Paper>
               </Grid>
               {/* Recent Deposits */}

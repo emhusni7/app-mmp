@@ -8,9 +8,6 @@ import {Box, Grid, Button} from '@mui/material';
 import { ArrowBackIosNewOutlined } from "@mui/icons-material";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
-
-
-
 const SinglePagePDFViewer = dynamic(() => import("../src/components/Fields/pdfView"), {
   ssr: false
 });

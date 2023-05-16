@@ -35,7 +35,6 @@ export default class MyDocument extends Document {
           <meta property="og:site_name" content="CAS App" />
           <meta property="og:url" content="http://localhost:3000" />
           <meta property="og:image" content="https://yourdomain.com/icons/apple-touch-icon.png" />
-          <meta name='viewport' content='minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover' />
           {/* Inject MUI styles first to match with the prepend: true configuration. */}
           {this.props.emotionStyleTags}
         </Head>

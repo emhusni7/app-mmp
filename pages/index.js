@@ -11,8 +11,6 @@ import CircularProgressWithLabel from '../src/components/Layout/circularProgress
 import { getCookie } from "cookies-next";
 import Box from '@mui/material/Box';
 
-
-
 export default function Index() {
     const router = useRouter()
     const [loading, setLoading] = useState(false);
@@ -31,27 +29,7 @@ export default function Index() {
     return (
         <section>
             
-            {loading ? (<Box sx={{ width: '100%', height:100, margin: '50px',spacing: '5', alignItems:'center'}}><CircularProgressWithLabel /></Box>) : (<Grid justifyContent="center" alignItems="center" container sx={{ mt: 7}}  minHeight={160}>
-                {menus.map((value, index) => (
-                <Card key={index} className={styles.card} sx={{ width: 120 }}>
-                    <CardActionArea
-                    onClick={(e) => pageRoute(value.name)}
-                    >
-                            <CardMedia
-                                key={index}
-                                component="img"
-                                height="100"
-                                image={`/static/${value.name}.png`}
-                                alt={value.label}
-                            />
-                                <CardActions>
-                                    <Button onClick={(e) => pageRoute(value.name)} size="small">{value.label}</Button>
-                                </CardActions>
-                                </CardActionArea>            
-                        </Card>)
-                )}
-                
-            </Grid>)}
+            
             
         </section>)
 }
