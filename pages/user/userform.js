@@ -34,11 +34,11 @@ export default function UForm(props){
         <Grid item xs={6}>
             <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="username" id="username" fullWidth placeholder="Username" required />
         </Grid>
-        <Grid xs={6}></Grid>
+        <Grid item xs={6}></Grid>
         <Grid item xs={6}>
             <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="password" type="password" fullWidth  id="password" placeholder="Password" required />
         </Grid>
-        <Grid xs={6}></Grid>
+        <Grid item xs={6}></Grid>
         <Grid item xs={12}>
             <Divider />
             <br></br>

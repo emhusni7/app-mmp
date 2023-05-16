@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
+import { Button } from "@mui/material";
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 90 },
@@ -46,15 +47,16 @@ const rows = [
   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
-export default function UGrid() {
+export default function UGrid(props) {
   return (
-    <Box sx={{ height: '100%', width: '100%' }}>
+    
+    <Box sx={{ height: '80%', width: '100%' }}>
+      <Button variant="contained" onClick={props.changeMode} sx={{ mb: 2}}>Create</Button>
       <DataGrid
         rows={rows}
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
-        checkboxSelection
         disableSelectionOnClick
         experimentalFeatures={{ newEditingApi: true }}
       />
