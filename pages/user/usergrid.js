@@ -9,20 +9,20 @@ const columns = [
     field: 'firstName',
     headerName: 'First name',
     width: 150,
-    editable: true,
+    editable: false,
   },
   {
     field: 'lastName',
     headerName: 'Last name',
     width: 150,
-    editable: true,
+    editable: false,
   },
   {
     field: 'age',
     headerName: 'Age',
     type: 'number',
     width: 110,
-    editable: true,
+    editable: false,
   },
   {
     field: 'fullName',

@@ -1,8 +1,35 @@
-import { Grid, TextField, Box, Divider, Button, Paper } from "@mui/material";
+import { Grid, TextField, Box, Divider, Button, Paper, Stack, Chip } from "@mui/material";
 import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { useFormik } from 'formik';
 import * as yup from "yup";
+
+const ColorChips = () => {
+    return (
+      <Stack alignItems="right">
+        <Stack direction="row" spacing={1}>
+          <Chip label="primary" color="primary" />
+        </Stack>
+        </Stack>
+    );
+  }
+
+const FHeader = () => {
+    return (<>
+    <Grid item xs={6}>
+        <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>BORROW</Box>
+    </Grid>
+    <Grid item xs={6} sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          bgcolor: 'background.paper',
+         }}>
+        <ColorChips />
+    </Grid>
+    <Grid item xs={12}>
+        <Divider />
+    </Grid></>)
+}
 
 export default function FPinjam(props){
     const initial_val = { ...props}
@@ -34,94 +61,91 @@ export default function FPinjam(props){
     
     return (
     <form onSubmit={formFmk.handleSubmit}>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-    <Grid container spacing={3}>
-    <Grid item xs={12} md={12} lg={12}>
-      <Paper
-        sx={{
-          p: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
-          
-        }}
-      >
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>BORROW</Box>
-                    <Divider />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField variant="standard" inputProps={{ readOnly: true }} onChange={formFmk.handleChange} size="small" name="userid" id="userid" fullWidth placeholder="User ID" required />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField variant="standard" inputProps={{ readOnly: true }} onChange={formFmk.handleChange} size="small" name="rfid" id="rfid" fullWidth placeholder="RFID" required />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="username" fullWidth  id="username" placeholder="Username" required />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="item_id" fullWidth  id="item_id" placeholder="Item" required />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField  onChange={formFmk.handleChange} multiline={true} rows={3} size="small" name="description" fullWidth  id="description" placeholder="Description" />
-                </Grid>
-                <Grid item xs={6}>
-                    <DesktopDatePicker
-                            id="date_f"
-                            variant="standard"
-                            name="date_f"
-                            label="Date From"
-                            inputFormat="DD/MM/YYYY"
-                            required
-                            fullWidth
-                            value={formFmk.values.date_f}
-                            onChange={(val) => {
-                                formFmk.setFieldValue("date_f", val, "")
-                            }}
-                            renderInput={(params) =>
-                                <TextField {...params}
-                                size="small"
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <Grid container spacing={3}>
+        <Grid item xs={12} md={12} lg={12}>
+        <Paper
+            sx={{
+            p: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            
+            }}
+        >
+                <Grid container spacing={2}>
+                    <FHeader />
+                    <Grid item xs={6}>
+                        <TextField variant="standard" inputProps={{ readOnly: true }} onChange={formFmk.handleChange} size="small" name="userid" id="userid" fullWidth placeholder="User ID" required />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField variant="standard" inputProps={{ readOnly: true }} onChange={formFmk.handleChange} size="small" name="rfid" id="rfid" fullWidth placeholder="RFID" required />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="username" fullWidth  id="username" placeholder="Username" required />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="item_id" fullWidth  id="item_id" placeholder="Item" required />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField  onChange={formFmk.handleChange} multiline={true} rows={3} size="small" name="description" fullWidth  id="description" placeholder="Description" />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <DesktopDatePicker
                                 id="date_f"
+                                variant="standard"
                                 name="date_f"
-                                style={{ width: '100%'}}
-                                />}
-                            />
-                </Grid>
-                <Grid item xs={6}>
-                <DesktopDatePicker
-                            id="date_to"
-                            variant="standard"
-                            name="date_to"
-                            label="Date To"
-                            inputFormat="DD/MM/YYYY"
-                            required
-                            fullWidth
-                            value={formFmk.values.date_to}
-                            onChange={(val) => {
-                                formFmk.setFieldValue("date_to", val, "")
-                            }}
-                            renderInput={(params) =>
-                                <TextField {...params}
-                                size="small"
+                                label="Date From"
+                                inputFormat="DD/MM/YYYY"
+                                required
+                                fullWidth
+                                value={formFmk.values.date_f}
+                                onChange={(val) => {
+                                    formFmk.setFieldValue("date_f", val, "")
+                                }}
+                                renderInput={(params) =>
+                                    <TextField {...params}
+                                    size="small"
+                                    id="date_f"
+                                    name="date_f"
+                                    style={{ width: '100%'}}
+                                    />}
+                                />
+                    </Grid>
+                    <Grid item xs={6}>
+                    <DesktopDatePicker
                                 id="date_to"
+                                variant="standard"
                                 name="date_to"
-                                style={{ width: '100%'}}
-                                />}
-                            />
+                                label="Date To"
+                                inputFormat="DD/MM/YYYY"
+                                required
+                                fullWidth
+                                value={formFmk.values.date_to}
+                                onChange={(val) => {
+                                    formFmk.setFieldValue("date_to", val, "")
+                                }}
+                                renderInput={(params) =>
+                                    <TextField {...params}
+                                    size="small"
+                                    id="date_to"
+                                    name="date_to"
+                                    style={{ width: '100%'}}
+                                    />}
+                                />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Divider />
+                        <br></br>
+                        <Button  variant="contained" type="submit">Simpan</Button>
+                        <Button sx={{pl:4}} onClick={props.onClose} color="error">
+                                Cancel
+                        </Button> 
+                    </Grid>
+                    
                 </Grid>
-                <Grid item xs={12}>
-                    <Divider />
-                    <br></br>
-                    <Button  variant="contained" type="submit">Simpan</Button>
-                    <Button sx={{pl:4}} onClick={props.onClose} color="error">
-                            Cancel
-                    </Button> 
+                </Paper>
                 </Grid>
-                
-            </Grid>
-            </Paper>
-            </Grid>
-            </Grid>
+                </Grid>
     </LocalizationProvider></form>)
 }

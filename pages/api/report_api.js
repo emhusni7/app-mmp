@@ -5,7 +5,7 @@ export default async (req,res) => {
         if (req.body.report_type == 'sales_contract'){
             const result = await getReport(req.body.id, 'so_contract');
             return res.status(200).json(result);
-        } else if ( req.body.report_type == "pos_approval"){
+        } else if (req.body.report_type == "pos_approval"){
             const result = await getReport(req.body.id, 'po_approval');
             return res.status(200).json(result);
         }

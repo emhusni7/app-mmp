@@ -25,15 +25,14 @@ export default function CForm(props){
     
     return (
     <form onSubmit={formFmk.handleSubmit}>
-    <Grid container spacing={2}>
+    <Grid container spacing={1}>
         <Grid item xs={12}>
-        <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>CATEGORY</Box>
+            <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>Category</Box>
             <Divider />
         </Grid>
         <Grid item xs={6}>
             <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="categoryName" id="categoryName" fullWidth placeholder="Category Name" required />
         </Grid>
-        <Grid xs={6}></Grid>
         <Grid xs={6}></Grid>
         <Grid item xs={12}>
             <Divider />
