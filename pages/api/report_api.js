@@ -1,5 +1,3 @@
-import { useEffect } from "react";
-
 export default async (req,res) => {
     try {
         if (req.body.report_type == 'sales_contract'){

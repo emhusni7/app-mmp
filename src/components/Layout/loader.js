@@ -99,3 +99,11 @@ export function CustomizedProgressBars() {
     </Box>
   );
 }
+
+export function PersentProgressBars({progress}){
+  return (
+    <Box>
+      <BorderLinearProgress variant="determinate" value={progress} />
+    </Box>
+  );
+}
