@@ -1,0 +1,3 @@
+upgrade prisma
+npx prisma db pull => db to prisma
+npx prisma db push => prisma to db

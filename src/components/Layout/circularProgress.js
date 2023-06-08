@@ -15,7 +15,7 @@ function CircularProgressWithLabel(props) {
       direction="column"
       alignItems="center"
       justifyContent="center" >
-      <CircularProgress size="30vh" variant="determinate" {...props} />
+      <CircularProgress size="20vh" variant="determinate" {...props} />
       <Box
         sx={{
           position: 'absolute',

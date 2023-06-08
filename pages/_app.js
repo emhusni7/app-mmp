@@ -7,6 +7,8 @@ import Layout from "../src/components/Layout";
 import { useRouter } from 'next/router';
 import NotifApp from '../src/components/Fields/notification';
 
+import { CustomizedProgressBars } from '../src/components/Layout/loader';
+
 const getMuiTheme = () => createTheme({
   overrides: {
     MUIDataTableFilterList: {
@@ -29,9 +31,11 @@ export default function MyApp({ Component, pageProps}) {
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Layout>
+      
       <NotifApp>
         <Component {...pageProps} />  
       </NotifApp>
+      
     </Layout>
   </ThemeProvider>)
 }

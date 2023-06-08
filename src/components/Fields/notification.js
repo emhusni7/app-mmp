@@ -1,8 +1,15 @@
 import React from 'react';
+import { Backdrop } from '@mui/material';
+import LinearProgress from '@mui/material/LinearProgress';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { styled } from '@mui/material/styles';
+import CircularProgressWithLabel from '../Layout/circularProgress';
 
 
 export default function NotifApp({children}){
+  
+  const [progress, createProgress] = React.useState(false);
+  
   function createNotif(type, message, title){
       switch (type) {
         case 'info':
@@ -25,7 +32,7 @@ export default function NotifApp({children}){
     // Checking isValidElement is the safe way and avoids a
     // typescript error too.
     if (React.isValidElement(child)) {
-      return React.cloneElement(child, { createNotif });
+      return React.cloneElement(child, { createNotif, createProgress });
     }
     return child;
   });
@@ -33,6 +40,12 @@ export default function NotifApp({children}){
   return (
     <div>
       {childrenWithProps}
+      <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={progress}
+        >
+          <CircularProgressWithLabel />
+        </Backdrop>
       <NotificationContainer/>
     </div>
   );

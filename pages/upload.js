@@ -4,17 +4,17 @@ import { Container,Box, Typography, Button, ListItem, Grid, TextField, IconButto
 import LinearProgress from "@mui/material";
 import { WithStyles } from "@mui/styles";
 import SyncIcon from '@mui/icons-material/Sync';
-import { PersentProgressBars } from "../src/components/Layout/loader";
+import { PersentProgressBars, CustomizedProgressBars } from "../src/components/Layout/loader";
 import axios from "axios";
 
-    export default function UploadButtons() {
+    export default function UploadButtons({createNotif}) {
 
         const [file, setFile] = useState(null);
         const [pathname, setPath] = useState("");
+        const [progress, setProgress] = useState(0);
+        const [loading, setLoading] = useState(false);
 
-      
-        useEffect( async() => {
-        
+        useEffect(async() => {
           const apiDt = await fetch('/api/mdbc',{
               method: "GET",
               headers:{
@@ -26,16 +26,38 @@ import axios from "axios";
         },[])
 
         const uploadToServer = async (event) => {
+          setProgress(0);
           const body = new FormData();
           body.append("file", file, file.name);
-          const response = await fetch("/api/mdbc", {
-            method: "POST",
-            body
-          });
+          axios.post("/api/mdbc", body, {
+            onUploadProgress: (progressEvent) => {
+              const percentage = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              setProgress(percentage);
+            }
+          }).then((resp) => {
+            console.log(resp);
+          })
+          .catch((error) => console.log(error));
         }
 
         const syncData = async() => {
-          const res = await fetch()
+          setLoading(true)
+          const res = await fetch("/api/mdbc",{
+            method: "PUT",
+            headers:{
+              "Content-Type": 'application/json'
+            }
+          })
+          const data = await res.json();
+          setLoading(false);
+          if (res.status === 200){
+            createNotif('success', 'Data Karyawan Has Been Syncronized')
+          } else {
+            createNotif('error', 'Error')
+          }
+
         }
 
         const handleOnChange = e => {
@@ -45,7 +67,7 @@ import axios from "axios";
 
         return (<>
                 <Grid container spacing={1}>
-                  <Grid item xs={6}><PersentProgressBars progress={25} ></PersentProgressBars></Grid>
+                  <Grid item xs={6}><PersentProgressBars progress={progress} ></PersentProgressBars></Grid>
                   <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <Button
@@ -78,6 +100,8 @@ import axios from "axios";
                   </Grid>
                 </Grid>
                 <Grid container sx={{ mt:2}} spacing={1}>
+                  <Grid item xs={6}>{loading ? (<CustomizedProgressBars />) : ""}</Grid>
+                  <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <TextField
                       id="pathname"
@@ -94,7 +118,7 @@ import axios from "axios";
                     />
                   </Grid>
                   <Grid item xs={6}>
-                    <Button variant="outlined"><SyncIcon>Sync</SyncIcon></Button>
+                    <Button variant="outlined" onClick={() => syncData()}><SyncIcon>Sync</SyncIcon></Button>
                   </Grid>
                 </Grid>
           </>          

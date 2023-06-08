@@ -1,26 +1,56 @@
 import { Grid, TextField, Box, Divider, Button } from "@mui/material";
 import { useFormik } from 'formik';
 import * as yup from "yup";
-export default function UForm(props){
+import Autosync from "../../src/components/Fields/autoComplete";
 
-    const initial_val = { ...props}
+export default function UForm(props){
+    const {mode, data } = {...props}
+    let initial_val = {}
+    if (mode === 'create'){
+        initial_val = {}
+    } else {
+        let newctg = []
+        if(data.categories){
+            newctg = data.categories.map((x) => ({title: x.category.category_name, value: x.category.id}))
+        }
+        initial_val = {...data, categories: newctg}
+    }
+    
+    
     const BCSchema = yup.object({
-        username: yup.string().required("Username is required"),
-        password: yup.string().required("Password is required"),
+        username: yup.string().required("Username Is Required"),
+        password: yup.string().required("Password Is Required"),
+       
     })
     
-
     const formFmk = useFormik({
         initialValues: initial_val,
         validationSchema: BCSchema,
-        onSubmit: (values, { 
-          setSubmitting
+        onSubmit: (values, { resetForm
+        
          }) => {
-            alert(JSON.stringify(values, null, 2));
-            setTimeout(() => {
-            setSubmitting(false);
-           // NotificationManager.success('Data Has Been Saved', 'Saved');
-          },1000);
+            // alert("tes");
+            setTimeout(async() => {
+                resetForm(initial_val);
+                
+                const newVal = values.categories.map((x) => (
+                    {category:
+                        {connect:
+                                {id : x.value}
+                        }
+                    }))
+                if (mode === 'create'){
+                    const newValue = {...values, categories: {create : newVal}}
+                    await props.create(newValue);
+                } else if (mode === 'edit'){
+                    const newValue = {...values, categories: {
+                            deleteMany: {},
+                            create : newVal
+                        }   
+                    }
+                    await props.write(values.id, newValue);
+                }
+            },700);            
         },
       });
     
@@ -32,17 +62,32 @@ export default function UForm(props){
             <Divider />
         </Grid>
         <Grid item xs={6}>
-            <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="username" id="username" fullWidth placeholder="Username" required />
+            <TextField variant="standard" value={formFmk.values.username} onChange={formFmk.handleChange} size="small" name="username" id="username" fullWidth placeholder="Username" required />
         </Grid>
         <Grid item xs={6}></Grid>
         <Grid item xs={6}>
-            <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="password" type="password" fullWidth  id="password" placeholder="Password" required />
+            <TextField variant="standard" value={formFmk.values.password} onChange={formFmk.handleChange} size="small" name="password" type="password" fullWidth  id="password" placeholder="Password" required />
+        </Grid>
+        <Grid item xs={6}></Grid>
+        <Grid item xs={6}>
+            <Autosync 
+                id="categories" 
+                label="Categories" 
+                name="categories"
+                value={formFmk.values.categories}
+                onChange={(value) => {
+                   
+                   formFmk.setFieldValue("categories", value)
+                }} 
+                getListData={props.getList} 
+                multiple={true}>
+            </Autosync>
         </Grid>
         <Grid item xs={6}></Grid>
         <Grid item xs={12}>
             <Divider />
             <br></br>
-            <Button  variant="contained" type="submit">Simpan</Button>
+            <Button  variant="contained" type="submit">{mode === 'create' ? 'Simpan' : 'Update'}</Button>
             <Button sx={{pl:4}} onClick={props.onClose} color="error">
                     Cancel
             </Button> 

@@ -1,0 +1,75 @@
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
+export default async (req, res) => {
+    try {
+        let result;
+        if (req.method === "POST"){
+            result = await createUser(req.body);
+        } else if(req.method === "GET" && req.query.browse){
+            result = await getUser()
+        } else if (req.method === "GET" && req.query.delete){
+            result = await delUser(req.query.id);
+        } else if (req.method === "PUT") {
+            result = await write(req.body.id, req.body)
+        }
+        await prisma.$disconnect()
+        return res.status(200).json(result);
+
+
+    } catch (e) {
+        console.log(e.message)
+        await prisma.$disconnect()
+        return res.status(500).json({'message': e.message})
+    }   
+}
+
+
+const createUser = async (value) => {
+    const result = prisma.user.create({
+        data: value
+    });
+    return result
+}
+
+const getUser =async () => {
+    const result = await prisma.user.findMany({
+        orderBy: [{createdat: 'desc'}],
+        include:{
+            categories:{
+                include: {
+                    category: true
+                }
+            }
+        }
+    })
+    return result
+}
+
+const delUser = async (id) => {
+    await prisma.user.update({
+        data: {
+            categories: {
+                deleteMany:{}
+            }
+        }   ,
+        where: {id: Number(id)} 
+    })
+    const result = await prisma.user.delete({
+        where:{
+            id: Number(id)
+        }
+    })
+    return result;
+}
+
+
+const write = async (id, values) => {
+    delete values['id']; 
+    delete values['createdat']
+    const result = await prisma.user.update({
+        where: { id: Number(id)},
+        data: values
+    })
+    return result
+}

@@ -1,65 +1,80 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Edit } from '@mui/icons-material';
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 90 },
-  {
-    field: 'firstName',
-    headerName: 'First name',
-    width: 150,
-    editable: false,
-  },
-  {
-    field: 'lastName',
-    headerName: 'Last name',
-    width: 150,
-    editable: false,
-  },
-  {
-    field: 'age',
-    headerName: 'Age',
-    type: 'number',
-    width: 110,
-    editable: false,
-  },
-  {
-    field: 'fullName',
-    headerName: 'Full name',
-    description: 'This column has a value getter and is not sortable.',
-    sortable: false,
-    width: 160,
-    valueGetter: (params) =>
-      `${params.row.firstName || ''} ${params.row.lastName || ''}`,
-  },
-];
 
-const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: 10 },
-  { id: 6, lastName: 'Melisandre', firstName: '', age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];
+
 
 export default function UGrid(props) {
-  return (
+  
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 90 },
+    {
+      field: 'username',
+      headerName: 'User Name',
+      width: 600
+    },
+    {
+      field: 'createdat',
+      headerName: 'Created AT',
+      width: 100
+    },
+    { field: 'actions', headerName: 'Actions', headerAlign: "center", align: 'center' , width: 400, renderCell: (index) => {
+      return (
+        <Grid container justifyContent={'center'}>
+          <Grid item >
+            <IconButton onClick={async () => {
+              console.log(index);
+              props.onEdit(index.row);
+            }}>
+               <Edit  />
+            </IconButton>
+            <IconButton sx={{pl:1}} onClick={async(e) => {
+               if(confirm("Yakin Hapus User ?") === true){
+                console.log(index.row)
+                //await props.unlink(index.row.id, index.tabIndex);
+               }
+            }}>
+             <DeleteIcon />
+            </IconButton>
+            </Grid>
+        </Grid>
+            );
+    } }
     
-    <Box sx={{ height: '80%', width: '100%' }}>
-      <Button variant="contained" onClick={props.changeMode} sx={{ mb: 2}}>Create</Button>
+  ];
+
+  return (
+    <Box sx={{ height: 500, width: '100%', maxHeight: 'calc(500vh - 360px)' }}>
+      <Button variant="contained" onClick={() => props.changeMode('create')} sx={{ mb: 2}}>Create</Button>
       <DataGrid
-        rows={rows}
+        rows={props.rows}
         columns={columns}
         pageSize={5}
-        rowsPerPageOptions={[5]}
+        //rowHeight={35}
+        rowLength={25}
+        sx={{
+          overflow: 'auto',
+          '.MuiDataGrid-virtualScroller': {
+            height: 'auto',
+            overflow: 'hidden',
+          },
+          '.MuiDataGrid-main > div:nth-child(2)': {
+            overflowY: 'auto !important',
+            flex: 'unset !important',
+          },
+        }}
+        autoHeight={true}
+        rowsPerPageOptions={[25]}
         disableSelectionOnClick
+        disableRowSelectionOnClick
+        getRowId= {(row) => row.id}
         experimentalFeatures={{ newEditingApi: true }}
       />
     </Box>
   );
 }
+

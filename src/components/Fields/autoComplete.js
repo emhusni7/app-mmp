@@ -13,7 +13,7 @@ function sleep(delay = 0) {
 
 export default function Autosync(props) {
   
-  const {onChange, name, getListData, label = "name", id = "id", showName,defaultValue,disabled,required,value,noOption="No Option"} = props;
+  const {onChange, multiple , name, getListData, label = "name", id = "id", showName,defaultValue,disabled,required,value,noOption="No Option"} = props;
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState([]);
   const loading = open && options.length === 0;
@@ -53,6 +53,8 @@ export default function Autosync(props) {
     <Autocomplete
       id={name}
       name={name}
+      multiple={multiple}
+      value={value}
       fullWidth
       size="small"
       open={open}
@@ -63,7 +65,7 @@ export default function Autosync(props) {
         setOpen(false);
       }}
       isOptionEqualToValue={(option, value) => option.title === value.title}
-      getOptionLabel={(option) => `${option.value} - ${option.title}`}
+      getOptionLabel={(option) => `${option.title}`}
       options={options}
       onChange={(e, value) => onChange(value)}
       loading={loading}

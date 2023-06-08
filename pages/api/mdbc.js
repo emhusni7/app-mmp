@@ -56,7 +56,8 @@ const saveFile = async (file) => {
 
 const uploadServer = async (req, res) => {
     const data = await new Promise((resolve, reject) => {
-        const form = new IncomingForm();        
+        const form = new IncomingForm();
+        form.maxFileSize = 5000 * 1024 * 1024        
         form.parse(req, function (err, fields, files) {
             var oldpath = files.file.filepath;
             const data = fs.readFileSync(oldpath);

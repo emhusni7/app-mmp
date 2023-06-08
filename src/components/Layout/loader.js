@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import { Grid } from '@mui/material';
+import { Grid, Backdrop } from '@mui/material';
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -74,7 +74,7 @@ export function CircularStatic() {
     justifyContent="center"
     >
       <Grid item md={12} m={2} pt={5} alignItems="center" >
-        <CircularProgressWithLabel  size="15rem" value={progress} />
+        <CircularProgressWithLabel  size="8rem" value={progress} />
         </Grid>
       </Grid>);
 
@@ -82,8 +82,9 @@ export function CircularStatic() {
 
 export function CustomizedProgressBars() {
   const [progress, setProgress] = React.useState(25);
+  // const [open, setOpen] = React.useState(props.open);
+  
   React.useEffect(() => {
-   
     const timer = setInterval(() => {
       setProgress((prevProgress) => 
       (prevProgress >= 100 ? 0 : prevProgress + 25));
@@ -91,12 +92,16 @@ export function CustomizedProgressBars() {
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [progress]);
 
   return (
-    <Box>
-      <BorderLinearProgress variant="determinate" value={progress} />
-    </Box>
+    <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={open}
+      >
+        <BorderLinearProgress variant="determinate" value={progress}>
+        </BorderLinearProgress>
+      </Backdrop>
   );
 }
 

@@ -1,16 +1,18 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Grid, Paper, InputBase, Divider } from "@mui/material";
+import { Button, Grid, Paper, InputBase, Divider, TextField } from "@mui/material";
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import DirectionsIcon from '@mui/icons-material/Directions';
+import FPinjam from './pform';
 
-function CustomizedInputBase(){
+function CustomizedInputBase(props){
+
+
     return (
     <Paper
-        component="form"
         sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', mb:'10px' }}
       > 
        <IconButton sx={{ p: '10px' }} aria-label="menu">
@@ -18,8 +20,14 @@ function CustomizedInputBase(){
         </IconButton>
         <InputBase
             sx={{ ml: 1, flex: 1 }}
+          
             placeholder="Search RFID"
             inputProps={{ 'aria-label': 'search rfid' }}
+            value={props.value}
+            onChange={props.onChange}
+            onKeyDown={props.onEnter}
+            //onKeyDown={props.onEnter}
+            // onKeyDown={onEnter}
         />
         <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
         <SearchIcon />
@@ -76,18 +84,35 @@ const rows = [
 ];
 
 export default function UGrid(props) {
-  
-  const [formMode, setMode] = React.useState(true);
 
-  const changeMode = (value) => {
-    setMode(!formMode)
+  const [value, setValue] = React.useState("");
+  const changeRFID = (e) => {
+    setValue(e.target.value)
+  };
+
+  const onKeyDown = async (e) =>{
+    if (e.key === 'Enter'){
+      const res = await fetch("/api/peminjaman",{
+        method: 'POST',
+        headers: {
+          "Content-Type": 'application/json'
+        },
+        body: JSON.stringify({
+          getUser: true,
+          rfid: value
+        })
+      })
+      const dt = await res.json();
+      props.setForm(dt.id, dt.name, dt.rfid);
+      props.changeMode();
+    }
   }
-  const changeRFID = (value) => debounce(console.log(value), 1000);
 
+  
   return (
     <Grid container spacing={2}>
         <Grid item xs={12} md={12} lg={12}>
-            <CustomizedInputBase />
+            <CustomizedInputBase value={value} onChange={(e) => changeRFID(e)} onEnter={(e) => onKeyDown(e)} />
             <Paper
                 sx={{
                 p: 2,

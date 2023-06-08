@@ -2,10 +2,15 @@ import { Grid, TextField, Box, Divider, Button } from "@mui/material";
 import { useFormik } from 'formik';
 import * as yup from "yup";
 export default function CForm(props){
-
-    const initial_val = { ...props}
+    const {mode, data } = {...props}
+    let initial_val = {}
+    if (mode === 'create'){
+        initial_val = {}
+    } else {
+        initial_val = data
+    }
     const BCSchema = yup.object({
-        categoryName: yup.string().required("Category Name is required"),
+        category_name: yup.string().required("Category Name is required"),
     })
     
 
@@ -13,13 +18,16 @@ export default function CForm(props){
         initialValues: initial_val,
         validationSchema: BCSchema,
         onSubmit: (values, { 
-          setSubmitting
+          setSubmitting, resetForm
          }) => {
-            alert(JSON.stringify(values, null, 2));
-            setTimeout(() => {
-            setSubmitting(false);
-           // NotificationManager.success('Data Has Been Saved', 'Saved');
-          },1000);
+            setTimeout(async() => {
+                resetForm(initial_val);
+                if (mode === 'create'){
+                    await props.create(values);
+                } else if (mode === 'edit'){
+                    await props.write(values.id, values);
+                }
+            },700);
         },
       });
     
@@ -31,7 +39,7 @@ export default function CForm(props){
             <Divider />
         </Grid>
         <Grid item xs={6}>
-            <TextField variant="standard" onChange={formFmk.handleChange} size="small" name="categoryName" id="categoryName" fullWidth placeholder="Category Name" required />
+            <TextField value={formFmk.values.category_name} variant="standard" onChange={formFmk.handleChange} size="small" name="category_name" id="category_name" fullWidth placeholder="Category Name" required />
         </Grid>
         <Grid xs={6}></Grid>
         <Grid item xs={12}>
