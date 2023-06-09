@@ -1,5 +1,5 @@
-import PGrid from './pgrid';
-import PForm from './pform';
+import PGrid from './pinjam/pgrid';
+import PForm from './pinjam/pform';
 import React from 'react';
 
 export default function Pinjam(){

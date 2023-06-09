@@ -6,41 +6,32 @@ import { WithStyles } from "@mui/styles";
 import SyncIcon from '@mui/icons-material/Sync';
 import { PersentProgressBars, CustomizedProgressBars } from "../src/components/Layout/loader";
 import axios from "axios";
+import path from 'path';
 
-    export default function UploadButtons({createNotif}) {
+    export default function UploadButtons(props) {
 
-        const [file, setFile] = useState(null);
-        const [pathname, setPath] = useState("");
+        //console.log(props.pathname);
+        const [pathname, setPath] = useState(props.pathname);
         const [progress, setProgress] = useState(0);
         const [loading, setLoading] = useState(false);
 
-        useEffect(async() => {
-          const apiDt = await fetch('/api/mdbc',{
-              method: "GET",
-              headers:{
-                "Content-Type": 'application/json'
-              }
-            })
-            const res =await apiDt.json()
-            setPath(res.path);
-        },[])
 
-        const uploadToServer = async (event) => {
-          setProgress(0);
-          const body = new FormData();
-          body.append("file", file, file.name);
-          axios.post("/api/mdbc", body, {
-            onUploadProgress: (progressEvent) => {
-              const percentage = Math.round(
-                (progressEvent.loaded * 100) / progressEvent.total
-              );
-              setProgress(percentage);
-            }
-          }).then((resp) => {
-            console.log(resp);
-          })
-          .catch((error) => console.log(error));
-        }
+        // const uploadToServer = async (event) => {
+        //   setProgress(0);
+        //   const body = new FormData();
+        //   body.append("file", file, file.name);
+        //   axios.post("/api/mdbc", body, {
+        //     onUploadProgress: (progressEvent) => {
+        //       const percentage = Math.round(
+        //         (progressEvent.loaded * 100) / progressEvent.total
+        //       );
+        //       setProgress(percentage);
+        //     }
+        //   }).then((resp) => {
+        //     console.log(resp);
+        //   })
+        //   .catch((error) => console.log(error));
+        // }
 
         const syncData = async() => {
           setLoading(true)
@@ -53,57 +44,35 @@ import axios from "axios";
           const data = await res.json();
           setLoading(false);
           if (res.status === 200){
-            createNotif('success', 'Data Karyawan Has Been Syncronized')
+            props.createNotif('success', 'Data Karyawan Has Been Syncronized')
           } else {
-            createNotif('error', 'Error')
+            props.createNotif('error', data.message)
           }
 
         }
 
-        const handleOnChange = e => {
-          console.log(e.target.files[0]);
-          setFile(e.target.files[0]);
-      };
+      //   const handleOnChange = e => {
+      //     var file = e.target.files[0];
+      //     let reader = new FileReader();
+      //     reader.readAsDataURL(file);
+      //     reader.onload = () => {
+      //       setPath(reader.result)
+      //       console.log(reader.result);
+      //     };
+      //     reader.onerror = function (error) {
+      //       console.log('Error: ', error);
+      //     }
+      //     //setFile(e.target.files[0]);
+      // };
 
         return (<>
-                <Grid container spacing={1}>
-                  <Grid item xs={6}><PersentProgressBars progress={progress} ></PersentProgressBars></Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}>
-                    <Button
-                        fullWidth
-                        className="btn-choose"
-                        variant="outlined"
-                        component="label" >
-                      <input
-                        id="btn-upload"
-                        name="btn-upload"
-                        type="file"
-                        onChange={(e) => handleOnChange(e)} 
-                        />
-                      
-                        Choose Files
-                      </Button>
-                    </Grid>
-                    <Grid item xs={6}>
-                    <Button
-                      className="btn-upload"
-                      color="primary"
-                      variant="contained"
-                      component="span"
-                    //   disabled={!selectedFiles}
-                    onClick={(e) => uploadToServer(e)}
-                    >
-                      Upload
-                    </Button>
-                  
-                  </Grid>
-                </Grid>
+                
                 <Grid container sx={{ mt:2}} spacing={1}>
                   <Grid item xs={6}>{loading ? (<CustomizedProgressBars />) : ""}</Grid>
                   <Grid item xs={6}></Grid>
                   <Grid item xs={6}>
                     <TextField
+                      error
                       id="pathname"
                       name="pathname"
                       label="Pathname"
@@ -115,6 +84,7 @@ import axios from "axios";
                       InputLabelProps={{
                         shrink: true,
                       }}
+                      helperText="Input File karyawan.mdb"
                     />
                   </Grid>
                   <Grid item xs={6}>
@@ -123,3 +93,12 @@ import axios from "axios";
                 </Grid>
           </>          
       )}
+
+
+  export const getStaticProps = async() => {
+    const pathname = path.join(process.cwd(), "data");
+
+    return {
+      props: {pathname: pathname }
+    }
+  }
