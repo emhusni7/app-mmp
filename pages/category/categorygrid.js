@@ -26,7 +26,7 @@ export default function CGrid(props) {
             </IconButton>
             <IconButton sx={{pl:1}} onClick={async(e) => {
                if(confirm("Yakin Hapus User ?") === true){
-                  await props.unlink(index.row.id, index.tabIndex);
+                  await props.unlink(index.row.id, index.api.getSortedRowIds().indexOf(index.row.id));
                }
             }}>
              <DeleteIcon />

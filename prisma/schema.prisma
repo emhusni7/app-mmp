@@ -24,6 +24,7 @@ model Category {
   category_name String @unique(map: "category_name") @db.VarChar(20)
   createdat DateTime @default(now()) @db.Timestamp(0)
   users CategoriesOnUsers[]
+  items Item[]
   @@map("category")	
 }
 
@@ -35,4 +36,13 @@ model CategoriesOnUsers {
   categoryid Int 
   @@id([userid, categoryid])
   @@map("user_category_rel")
+}
+
+model Item{
+  id Int @id @default(autoincrement())
+  createdat DateTime @default(now()) @db.Timestamp(0)
+  item_name String @unique(map: "item_name") @db.VarChar(30)
+  description String @db.Text
+  categories Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  category_id Int
 }

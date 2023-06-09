@@ -30,3 +30,5 @@ yarn-error.log*
 
 # vercel
 .vercel
+prisma/migrations/20230608075729_init/migration.sql
+prisma/migrations/20230608082459_migration_name/migration.sql

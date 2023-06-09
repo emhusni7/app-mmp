@@ -60,7 +60,8 @@ export default function User(props){
             dispatch({'type': 'CHANGE_MODE', mode: 'view'})
             props.createNotif("success", "Data Has Been Saved")
         } else {
-            props.createNotif("Error", "Error")
+            const err = await res.json();
+            props.createNotif("error", err.message);
         }
         return res
     }
@@ -78,7 +79,8 @@ export default function User(props){
             dispatch({...state, type: 'ITEMS_DELETED', idx: index})
             props.createNotif('success', 'Data Has Been Delete')
         } else {
-            props.createNotif('error', 'Error Deleted')
+            const err = await res.json();
+            props.createNotif("error", err.message);
         }
         return res
     }
@@ -98,7 +100,8 @@ export default function User(props){
             dispatch({'type': 'CHANGE_MODE', mode: 'view'})
             props.createNotif("success", "Data Has Been Saved")
         } else {
-            props.createNotif("Error", "Error")
+            const err = await res.json();
+            props.createNotif("error", err.message);
         }
         return res
     }

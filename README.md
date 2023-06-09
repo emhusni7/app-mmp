@@ -33,6 +33,14 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+
+/*
+Prisma Migration
+change schema
+npx prisma migrate dev --name migration-name --create-only
+npx prisma migrate dev
+*/
+
 User Jason Access /*
     state null, to_approve,cancel,approved
      "po_approval_akses": {

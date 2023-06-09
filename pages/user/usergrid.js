@@ -34,8 +34,7 @@ export default function UGrid(props) {
             </IconButton>
             <IconButton sx={{pl:1}} onClick={async(e) => {
                if(confirm("Yakin Hapus User ?") === true){
-                console.log(index.row)
-                //await props.unlink(index.row.id, index.tabIndex);
+                await props.unlink(index.row.id, index.api.getSortedRowIds().indexOf(index.row.id));
                }
             }}>
              <DeleteIcon />
