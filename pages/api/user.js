@@ -1,6 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../src/models/db"; 
 
-const prisma = new PrismaClient();
 export default async (req, res) => {
     try {
         let result;

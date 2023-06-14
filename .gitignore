@@ -35,3 +35,8 @@ prisma/migrations/20230608082459_migration_name/migration.sql
 data/karyawan.mdb
 data/karyawan.json
 data/karyawan.json
+prisma/migrations/20230612044016_addpeminjaman/migration.sql
+prisma/migrations/20230612061210_uname/migration.sql
+prisma/migrations/20230612064611_alter_trx/migration.sql
+prisma/migrations/20230612065425_alter_trx2/migration.sql
+prisma/migrations/20230612073007_alter_trx2/migration.sql

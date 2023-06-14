@@ -1,18 +1,22 @@
-import { useMemo, useReducer } from "react";
-import * as React from "react";
+import PGrid from './kgrid';
+import PForm from './kform';
+import React, { useReducer, useMemo } from 'react';
 import dayjs from 'dayjs';
-import IGrid from "./itemgrid";
-import IForm from "./itemform";
+
 
 const initialState = {
     mode: 'view',
-    items: []
+    items: [],
+    rowLength: undefined,
+    paginationModel: {page: 0, pageSize: 25},
+    searchVal: null,
+    loading: false    
 }
 
 const reducer = (state, action) => {
     switch (action.type) {
       case 'ITEMS_REQUESTED':
-        return {...state, items:action.items}
+        return {...state, items:action.items, rowLength: action.rowLength}
       case 'ITEMS_DELETED':
         const arr = [...action.items]
         if (action.idx !== -1) {
@@ -21,32 +25,41 @@ const reducer = (state, action) => {
         return {...state, items: arr}
       case 'ITEMS_EDIT':
         return {...state, mode: 'edit', data: action.data}
+      case 'SET_FORM': 
+        return {...state, data: {userid: action.id, username: action.name, rfid: action.rfid, qty: 1, state: 'Pinjam', tgl_pinjam: new Date()}}
       case 'CHANGE_MODE':
         return {...state, mode: action.mode}
+      case 'SET_PAGINATION':
+        return {...state, paginationModel: {...state.paginationModel, page: action.page}}
+      case 'SET_SEARCH':
+        return {...state, searchVal: action.searchVal}
+      case 'SET_LOADING':
+        return {...state, loading: action.loading}
       default:
         return state;
     }
   } 
 
-export default function User(props){
-    const [state, dispatch] = useReducer(reducer, initialState);
-    // browse Category
-    const browseCtg = async () => {
-        const res = await fetch("/api/category?browse=1", {
+export default function Kembali(props){
+    const [state, dispatch] = useReducer(reducer, initialState)
+
+    // Browse Item
+    const browseItem = async () => {
+        const res = await fetch("/api/item?browse=1", {
             headers:{
                 'Content-Type': 'application/json'
             },
             method: 'GET'
         })
         const result = await res.json()
-        const dtres = result.map((x) => { return {value: x.id, title: x.category_name}})
+        const dtres = result.map((x) => { return {value: x.id, title: x.item_name, description: x.description}})
         return dtres
     }
 
     // create
     const create = async (values) => {
         props.createProgress(true);
-        const res = await fetch('/api/item',{
+        const res = await fetch('/api/peminjaman',{
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -69,7 +82,7 @@ export default function User(props){
     // unlink
     const unlink = async (id, index) => {
         props.createProgress(true);
-        const res = await fetch(`/api/item?id=${id}&delete=1`,{
+        const res = await fetch(`/api/peminjaman?id=${id}&delete=1`,{
             method: 'GET',
             headers: {
               'Content-Type': 'application/json'
@@ -87,7 +100,7 @@ export default function User(props){
     // update
     const write = async (id, values) => {
         props.createProgress(true);
-        const res = await fetch('/api/item',{
+        const res = await fetch('/api/peminjaman',{
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -107,35 +120,61 @@ export default function User(props){
 
 
     const browse = async () => {
-        const res = await fetch("/api/item?browse=1", {
+        let jsonDt;
+        dispatch({type: 'SET_LOADING', loading: true})
+        if (!!state.searchVal){
+          jsonDt = state.searchVal;       
+        } else {
+          jsonDt = JSON.stringify({
+            browse: 1,
+            orderBy : {
+                tgl_pinjam: 'desc'
+            }})  
+        }
+        const res = await fetch("/api/peminjaman", {
             headers:{
                 'Content-Type': 'application/json'
             },
-            method: 'GET'
+            method: 'POST',
+            body: jsonDt
         })
         const result = await res.json()
-        const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), categories: x.categories.category_name}})
-        dispatch({type: 'ITEMS_REQUESTED', items: dtres})
+        const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
+        dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
+        dispatch({type: 'SET_LOADING', loading: false})
     }
+    useMemo(() => {
+        if (state.mode === 'view'){
+            browse(state.paginationModel.page, state.paginationModel.pageSize);
+        }
+    } , [state.mode, state.paginationModel.page, state.searchVal]);
 
-    useMemo(() => browse(), [state.mode]);
     if (state.mode === 'view'){
-        return (<IGrid 
+        return (<PGrid 
             rows={state.items} 
             unlink={unlink}
+            setForm={(id, name, rfid) => dispatch({'type':'SET_FORM', id, name, rfid})}
             changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
-            onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt}) }
+            onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt})}
+            paginationModel={state.paginationModel}
+            searchVal={(value) => dispatch({'type': 'SET_SEARCH', searchVal: value})}
+            rowCount={state.rowLength}
+            loading={state.loading}
+            setPaginationModel={(env) => dispatch({type: 'SET_PAGINATION', page: env.page})}
         />)
     } else if (state.mode === 'edit'){
-        return (<IForm 
+        return (<PForm 
             mode={state.mode}
             data={state.data}
-            getList={browseCtg}
+            getList={browseItem}
             write={write}
             onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})} />)
     } 
-    return (<IForm mode={state.mode}
+    //dispatch({'type': 'SET_FORM', id, name, rfid}
+    return (<PForm 
+        mode={state.mode}
         create={create}
-        getList={browseCtg} 
+        data={state.data}
+        getList={browseItem} 
         onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})} />)
 }

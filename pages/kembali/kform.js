@@ -36,7 +36,6 @@ const FHeader = (props) => {
 export default function FPinjam(props){
 
     const mode = props.mode;
-    console.log(mode.includes('create','edit'));
     let initial_val;
     if (mode === 'create'){
         initial_val = { ...props.data}    
@@ -169,7 +168,7 @@ export default function FPinjam(props){
                                     />
                         </Grid>
                         <Grid item xs={6}>
-                        {/* {mode.includes('create','edit') ? "": (<DesktopDateTimePicker
+                        {mode.includes('create','edit') ? "": (<DesktopDateTimePicker
                                     id="date_to"
                                     variant="standard"
                                     name="date_to"
@@ -188,7 +187,7 @@ export default function FPinjam(props){
                                         name="date_to"
                                         style={{ width: '100%'}}
                                         />}
-                                    />)} */}
+                                    />)}
                         
                         </Grid>
                         <Grid item xs={12}>

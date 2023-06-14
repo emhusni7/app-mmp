@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Button, Grid, IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Edit } from '@mui/icons-material';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export default function CGrid(props) {
   const columns = [
@@ -41,6 +42,10 @@ export default function CGrid(props) {
     <Box sx={{ height: '550px', width: '100%' }}>
       <Button variant="contained" onClick={() => props.changeMode('create')} sx={{ mb: 2}}>Create</Button>
       <DataGrid
+        slots={{
+          loadingOverlay: LinearProgress
+        }}
+        loading={props.rows.length === 0}
         rows={props.rows}
         columns={columns}
         pageSize={5}

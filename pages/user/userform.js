@@ -1,5 +1,5 @@
 import { Grid, TextField, Box, Divider, Button } from "@mui/material";
-import { useFormik } from 'formik';
+import { Formik, ErrorMessage } from 'formik';
 import * as yup from "yup";
 import Autosync from "../../src/components/Fields/autoComplete";
 
@@ -20,19 +20,15 @@ export default function UForm(props){
     const BCSchema = yup.object({
         username: yup.string().required("Username Is Required"),
         password: yup.string().required("Password Is Required"),
-       
+        categories: yup.array().required("Category Is Required"),
     })
     
-    const formFmk = useFormik({
-        initialValues: initial_val,
-        validationSchema: BCSchema,
-        onSubmit: (values, { resetForm
-        
-         }) => {
-            // alert("tes");
+    return (
+    <Formik
+        initialValues={initial_val}
+        validationSchema={BCSchema}
+        onSubmit={(values, { resetForm, setSubmitting, setFieldError}) => {
             setTimeout(async() => {
-                resetForm(initial_val);
-                
                 const newVal = values.categories.map((x) => (
                     {category:
                         {connect:
@@ -41,7 +37,10 @@ export default function UForm(props){
                     }))
                 if (mode === 'create'){
                     const newValue = {...values, categories: {create : newVal}}
-                    await props.create(newValue);
+                    const res = await props.create(newValue);
+                    if (res.status !== 200){
+                        setFieldError('username', ' ')
+                    }
                 } else if (mode === 'edit'){
                     const newValue = {...values, categories: {
                             deleteMany: {},
@@ -50,48 +49,60 @@ export default function UForm(props){
                     }
                     await props.write(values.id, newValue);
                 }
-            },700);            
-        },
-      });
+                
+            },700);  
+        }}
+        >{({
+            values,
+            errors,
+            touched,
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            setFieldError,
+            setFieldValue,
+            isSubmitting,
+            /* and other goodies */
+          }) => (<form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
+                <Grid item xs={12}>
+                <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>USER</Box>
+                    <Divider />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField error={errors.username} required variant="standard" value={values.username} onChange={handleChange} size="small" name="username" id="username" fullWidth placeholder="Username" />
+                    <ErrorMessage name="username" />
+                </Grid>
+                <Grid item xs={6}></Grid>
+                <Grid item xs={6}>
+                    <TextField required variant="standard" value={values.password} onChange={handleChange} size="small" name="password" type="password" fullWidth  id="password" placeholder="Password"  />
+                </Grid>
+                <Grid item xs={6}></Grid>
+                <Grid item xs={6}>
+                    <Autosync 
+                        id="categories" 
+                        label="Categories" 
+                        name="categories"
+                        value={values.categories}
+                        error={true}
+                        onChange={(value) => {
+                           setFieldValue("categories", value)
+                        }} 
+                        getListData={props.getList} 
+                        multiple={true}>
+                    </Autosync>
+                </Grid>
+                <Grid item xs={6}></Grid>
+                <Grid item xs={12}>
+                    <Divider />
+                    <br></br>
+                    <Button  variant="contained" type="submit">{mode === 'create' ? 'Simpan' : 'Update'}</Button>
+                    <Button sx={{pl:4}} onClick={props.onClose} color="error">
+                            Cancel
+                    </Button> 
+                 </Grid>
+                
+            </Grid></form>)}</Formik>
     
-    return (
-    <form onSubmit={formFmk.handleSubmit}>
-    <Grid container spacing={2}>
-        <Grid item xs={12}>
-        <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>USER</Box>
-            <Divider />
-        </Grid>
-        <Grid item xs={6}>
-            <TextField variant="standard" value={formFmk.values.username} onChange={formFmk.handleChange} size="small" name="username" id="username" fullWidth placeholder="Username" required />
-        </Grid>
-        <Grid item xs={6}></Grid>
-        <Grid item xs={6}>
-            <TextField variant="standard" value={formFmk.values.password} onChange={formFmk.handleChange} size="small" name="password" type="password" fullWidth  id="password" placeholder="Password" required />
-        </Grid>
-        <Grid item xs={6}></Grid>
-        <Grid item xs={6}>
-            <Autosync 
-                id="categories" 
-                label="Categories" 
-                name="categories"
-                value={formFmk.values.categories}
-                onChange={(value) => {
-                   
-                   formFmk.setFieldValue("categories", value)
-                }} 
-                getListData={props.getList} 
-                multiple={true}>
-            </Autosync>
-        </Grid>
-        <Grid item xs={6}></Grid>
-        <Grid item xs={12}>
-            <Divider />
-            <br></br>
-            <Button  variant="contained" type="submit">{mode === 'create' ? 'Simpan' : 'Update'}</Button>
-            <Button sx={{pl:4}} onClick={props.onClose} color="error">
-                    Cancel
-            </Button> 
-         </Grid>
-        
-    </Grid></form>)
+    )
 }

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../src/models/db"; 
 
 
 export default async (req, res) => {
@@ -23,7 +23,6 @@ export default async (req, res) => {
 
 
 const create = async (value) => {
-    const prisma = new PrismaClient();
     const result = prisma.category.create({
         data: value
     });
@@ -31,7 +30,6 @@ const create = async (value) => {
 }
 
 const browse =async () => {
-    const prisma = new PrismaClient();
     const result = await prisma.category.findMany({
         orderBy: [{createdat: 'desc'}]
     })
@@ -39,7 +37,6 @@ const browse =async () => {
 }
 
 const unlink = async (id) => {
-    const prisma = new PrismaClient();
     const result = await prisma.category.delete({
         where:{
             id: Number(id)
@@ -50,7 +47,6 @@ const unlink = async (id) => {
 
 
 const write = async (id, values) => {
-    const prisma = new PrismaClient();
     delete values['id'];
     delete values['createdat']
     const result = await prisma.category.update({

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../src/models/db"; 
 
 
 export default async (req, res) => {
@@ -17,14 +17,13 @@ export default async (req, res) => {
             return res.status(200).json(result);
         }
     } catch (e) {
-        console.log(e.message);
+        // console.log(e.message);
         return res.status(500).json({'message': e.message})
     }   
 }
 
 
 const create = async (value) => {
-    const prisma = new PrismaClient();
     const result = prisma.item.create({
         data: value
     });
@@ -32,7 +31,6 @@ const create = async (value) => {
 }
 
 const browse =async () => {
-    const prisma = new PrismaClient();
     const result = await prisma.item.findMany({
         orderBy: [{createdat: 'desc'}],
         include:{
@@ -44,7 +42,6 @@ const browse =async () => {
 }
 
 const unlink = async (id) => {
-    const prisma = new PrismaClient();
     const result = await prisma.item.delete({
         where:{
             id: Number(id)
@@ -55,7 +52,6 @@ const unlink = async (id) => {
 
 
 const write = async (id, values) => {
-    const prisma = new PrismaClient();
     delete values['id'];
     delete values['createdat']
     const result = await prisma.item.update({

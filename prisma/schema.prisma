@@ -45,4 +45,22 @@ model Item{
   description String @db.Text
   categories Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
   category_id Int
+  trans_ids Transaction[]
+}
+
+model Transaction{
+  id Int @id @default(autoincrement())
+  createdat DateTime @default(now()) @db.Timestamp(0)
+  username String @db.VarChar(50)
+  rfid String @db.VarChar(20)
+  userid String @db.VarChar(10)
+  items Item @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  description String? @db.Text
+  item_id Int
+  qty Float 
+  state String @db.VarChar(10)
+  tgl_pinjam DateTime?
+  tgl_kembali DateTime?
+  stUniq Int? 
+  @@unique([userid, username, item_id, stUniq])
 }

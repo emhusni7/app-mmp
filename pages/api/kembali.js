@@ -3,19 +3,7 @@ import { prisma } from "../../src/models/db";
 
 export default async(req, res) => {
     try {
-        if (req.body.getUser && req.method === "POST"){
-            const result = await getUser(req.body.rfid);
-            console.log(result)
-            if (!!result){
-                return res.status(200).json(result);            
-            } else {
-                res.status(404).json({'message': 'Data Not Found'});                
-            }
-            
-        } else if (req.method === "POST" && !req.body.browse){
-            const result = await create(req.body);
-            return res.status(200).json(result);
-        } else if(req.method === "POST" && req.body.browse){
+        if(req.method === "POST" && req.body.browse){
             const result = await browse(req.body.where, req.body.skip, req.body.take, req.body.orderBy);
             return res.status(200).json(result);
         } else if (req.method === "GET" && req.query.delete){
@@ -26,23 +14,10 @@ export default async(req, res) => {
             return res.status(200).json(result);
         }
     }catch (e){
-        console.log(e.message);
         res.status(404).json({'message': e.message});
     }
 }
 
-const getUser= async (value) => {
-    const data = userObj.find((usr) => usr.rfid === value)
-    return data
-}
-
-const create = async (value) => {
-    
-    const result = prisma.transaction.create({
-        data: value
-    });
-    return result
-}
 
 const browse =async (where , skip , take, orderBy) => {
 

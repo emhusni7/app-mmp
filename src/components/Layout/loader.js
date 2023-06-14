@@ -95,13 +95,9 @@ export function CustomizedProgressBars() {
   }, [progress]);
 
   return (
-    <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={open}
-      >
-        <BorderLinearProgress variant="determinate" value={progress}>
-        </BorderLinearProgress>
-      </Backdrop>
+    <Box>
+      <BorderLinearProgress variant="determinate" value={progress} />
+    </Box>
   );
 }
 

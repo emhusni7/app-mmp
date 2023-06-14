@@ -4,6 +4,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Button, Grid, IconButton } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Edit } from '@mui/icons-material';
+import {LinearProgress} from '@mui/material';
 
 
 
@@ -47,13 +48,13 @@ export default function UGrid(props) {
   ];
 
   return (
-    <Box sx={{ height: 500, width: '100%', maxHeight: 'calc(500vh - 360px)' }}>
+    <Box sx={{ maxHeight: 'calc(700vh - 360px)' }}>
       <Button variant="contained" onClick={() => props.changeMode('create')} sx={{ mb: 2}}>Create</Button>
       <DataGrid
         rows={props.rows}
         columns={columns}
         pageSize={5}
-        //rowHeight={35}
+        rowHeight={30}
         rowLength={25}
         sx={{
           overflow: 'auto',
@@ -69,6 +70,10 @@ export default function UGrid(props) {
         autoHeight={true}
         rowsPerPageOptions={[25]}
         disableSelectionOnClick
+        slots={{
+          loadingOverlay: LinearProgress
+        }}
+        loading={props.rows.length === 0}
         disableRowSelectionOnClick
         getRowId= {(row) => row.id}
         experimentalFeatures={{ newEditingApi: true }}

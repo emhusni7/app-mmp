@@ -1,5 +1,5 @@
 import { Grid, TextField, Box, Divider, Button } from "@mui/material";
-import { useFormik } from 'formik';
+import { Formik } from 'formik';
 import * as yup from "yup";
 export default function CForm(props){
     const {mode, data } = {...props}
@@ -13,43 +13,53 @@ export default function CForm(props){
         category_name: yup.string().required("Category Name is required"),
     })
     
-
-    const formFmk = useFormik({
-        initialValues: initial_val,
-        validationSchema: BCSchema,
-        onSubmit: (values, { 
-          setSubmitting, resetForm
-         }) => {
+    
+    return (
+    <Formik 
+        initialValues={initial_val}
+        validationSchema={BCSchema}
+        onSubmit={(values, { resetForm, setSubmitting, setFieldError}) => {
             setTimeout(async() => {
-                resetForm(initial_val);
                 if (mode === 'create'){
                     await props.create(values);
                 } else if (mode === 'edit'){
                     await props.write(values.id, values);
                 }
             },700);
-        },
-      });
-    
-    return (
-    <form onSubmit={formFmk.handleSubmit}>
-    <Grid container spacing={1}>
-        <Grid item xs={12}>
-            <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>Category</Box>
-            <Divider />
+        }}
+    >{({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        setFieldError,
+        setFieldValue,
+        isSubmitting,
+        /* and other goodies */
+      }) => (
+      <form onSubmit={handleSubmit}>
+        <Grid container spacing={1}>
+            <Grid item xs={12}>
+                <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>Category</Box>
+                <Divider />
+            </Grid>
+            <Grid item xs={6}>
+                <TextField value={values.category_name} variant="standard" onChange={handleChange} size="small" name="category_name" id="category_name" fullWidth placeholder="Category Name" required />
+            </Grid>
+            <Grid xs={6}></Grid>
+            <Grid item xs={12}>
+                <Divider />
+                <br></br>
+                <Button  variant="contained" type="submit">Save</Button>
+                <Button sx={{pl:4}} onClick={props.onClose} color="error">
+                        Cancel
+                </Button> 
+            </Grid>
+            
         </Grid>
-        <Grid item xs={6}>
-            <TextField value={formFmk.values.category_name} variant="standard" onChange={formFmk.handleChange} size="small" name="category_name" id="category_name" fullWidth placeholder="Category Name" required />
-        </Grid>
-        <Grid xs={6}></Grid>
-        <Grid item xs={12}>
-            <Divider />
-            <br></br>
-            <Button  variant="contained" type="submit">Save</Button>
-            <Button sx={{pl:4}} onClick={props.onClose} color="error">
-                    Cancel
-            </Button> 
-         </Grid>
-        
-    </Grid></form>)
+    </form>)}
+    </Formik>
+    )
 }
