@@ -1,22 +1,20 @@
-import PGrid from './kgrid';
-import PForm from './kform';
 import React, { useReducer, useMemo } from 'react';
 import dayjs from 'dayjs';
-
+import {PGrid, PForm} from '../component/pinjam';
+const server = process.env.NEXT_PUBLIC_URL
 
 const initialState = {
     mode: 'view',
     items: [],
     rowLength: undefined,
     paginationModel: {page: 0, pageSize: 25},
-    searchVal: null,
-    loading: false    
+    
 }
 
 const reducer = (state, action) => {
     switch (action.type) {
       case 'ITEMS_REQUESTED':
-        return {...state, items:action.items, rowLength: action.rowLength}
+        return {...state, items:action.items}
       case 'ITEMS_DELETED':
         const arr = [...action.items]
         if (action.idx !== -1) {
@@ -31,16 +29,12 @@ const reducer = (state, action) => {
         return {...state, mode: action.mode}
       case 'SET_PAGINATION':
         return {...state, paginationModel: {...state.paginationModel, page: action.page}}
-      case 'SET_SEARCH':
-        return {...state, searchVal: action.searchVal}
-      case 'SET_LOADING':
-        return {...state, loading: action.loading}
       default:
         return state;
     }
   } 
 
-export default function Kembali(props){
+export default function Pinjam(props){
     const [state, dispatch] = useReducer(reducer, initialState)
 
     // Browse Item
@@ -119,35 +113,33 @@ export default function Kembali(props){
     }
 
 
-    const browse = async () => {
-        let jsonDt;
-        dispatch({type: 'SET_LOADING', loading: true})
-        if (!!state.searchVal){
-          jsonDt = state.searchVal;       
-        } else {
-          jsonDt = JSON.stringify({
-            browse: 1,
-            orderBy : {
-                tgl_pinjam: 'desc'
-            }})  
-        }
-        const res = await fetch("/api/peminjaman", {
+    const browse = async (page, limit) => {
+        const skip = page * limit;
+        const res = await fetch(`${server}/api/peminjaman`, {
             headers:{
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             method: 'POST',
-            body: jsonDt
+            body: JSON.stringify({
+                browse: 1,
+                where: {
+                    tgl_kembali: undefined,
+                    stUniq: 1
+                },
+                skip: skip,
+                take: limit,
+                orderBy : {
+                    tgl_pinjam: 'desc'
+                }
+            })
         })
         const result = await res.json()
         const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
         dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
-        dispatch({type: 'SET_LOADING', loading: false})
     }
-    useMemo(() => {
-        if (state.mode === 'view'){
-            browse(state.paginationModel.page, state.paginationModel.pageSize);
-        }
-    } , [state.mode, state.paginationModel.page, state.searchVal]);
+    useMemo(() => {browse(state.paginationModel.page, state.paginationModel.pageSize);
+    } , [state.paginationModel.page]);
 
     if (state.mode === 'view'){
         return (<PGrid 
@@ -157,9 +149,9 @@ export default function Kembali(props){
             changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
             onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt})}
             paginationModel={state.paginationModel}
-            searchVal={(value) => dispatch({'type': 'SET_SEARCH', searchVal: value})}
             rowCount={state.rowLength}
-            loading={state.loading}
+            createNotif={props.createNotif}
+            createProgress={props.createProgress}
             setPaginationModel={(env) => dispatch({type: 'SET_PAGINATION', page: env.page})}
         />)
     } else if (state.mode === 'edit'){
@@ -177,4 +169,12 @@ export default function Kembali(props){
         data={state.data}
         getList={browseItem} 
         onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})} />)
+}
+
+export async function getServerSideProps(context){
+    return {
+        props: {
+            // items: dtres
+        }
+    }
 }

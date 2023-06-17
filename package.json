@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -28,6 +28,7 @@
     "crypto": "^1.0.1",
     "date-fns": "^2.29.3",
     "dayjs": "^1.11.5",
+    "eslint-config-next": "^13.4.6",
     "events": "^3.3.0",
     "formidable": "^2.1.1",
     "formik": "^2.2.9",
@@ -58,6 +59,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "eslint": "^8.42.0",
     "file-loader": "^6.2.0"
   },
   "browser": {

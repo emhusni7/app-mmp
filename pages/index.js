@@ -15,18 +15,6 @@ export default function Index() {
     const router = useRouter()
     const [loading, setLoading] = useState(false);
     const [menus, setMenu] = useState([]);
-    console.log(process.cwd());
-
-    useEffect(() => {
-        const access = eval(getCookie('menu'));
-        setMenu(access);
-        () => {}
-    }, [])
-
-    const pageRoute = (page) => {
-        setLoading(true);
-        router.push(`/${page}`);
-    }
     
     return (
         <section>

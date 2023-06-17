@@ -31,11 +31,9 @@ export default function MyApp({ Component, pageProps}) {
   <ThemeProvider theme={theme}>
     <CssBaseline />
     <Layout>
-      
       <NotifApp>
         <Component {...pageProps} />  
       </NotifApp>
-      
     </Layout>
   </ThemeProvider>)
 }

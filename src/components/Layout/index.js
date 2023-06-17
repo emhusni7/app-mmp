@@ -17,6 +17,7 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -99,7 +100,7 @@ const mdTheme = createTheme();
 
 
 const StyledMenu = styled((props) => (
-  <Menu
+  <MenuIcon
     elevation={0}
     anchorOrigin={{
       vertical: 'bottom',
@@ -242,7 +243,7 @@ const CustomBar = () => {
             </IconButton>
           </Toolbar>
           <Divider />  
-          <List component="nav">
+           {/* <List component="nav">
             <ListItemButton key={"Master"} >
               <ListItemIcon>
                 <InboxIcon />
@@ -250,7 +251,7 @@ const CustomBar = () => {
               <ListItemText primary={"Master"} />
               {pinjam ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
-              {/* child master */}
+             
             <List component="div" disablePadding>
               <ListItemButton key="User" href="/user" sx={{ pl: 3 }}>
                 <ListItemIcon>
@@ -321,42 +322,41 @@ const CustomBar = () => {
             </ListItem>
           ))}
         </List>
-          </List>
+          </List>  */}
         </Drawer>
         </>
 )}
 
 function DashboardContent({children}) {
   
-  const {asPath} = useRouter();
-  let body;
-  if (asPath.includes("peminjaman")){
-    body = children 
-  } else {
-    body =  <Grid container spacing={3}>
-    <Grid item xs={12} md={12} lg={12}>
-      <Paper
-        sx={{
-          p: 2,
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%',
+ //const {asPath} = useRouter();
+  // let body;
+  // if (asPath.includes("peminjaman")){
+  //   body = children 
+  // } else {
+  //   body =  <Grid container spacing={3}>
+  //   <Grid item xs={12} md={12} lg={12}>
+  //     <Paper
+  //       sx={{
+  //         p: 2,
+  //         display: 'flex',
+  //         flexDirection: 'column',
+  //         height: '100%',
           
-        }}
-      >
-       {children}
-      </Paper>
-    </Grid>
+  //       }}
+  //     >
+  //      {children}
+  //     </Paper>
+  //   </Grid>
     
-  </Grid>
-  }
+  // </Grid>
+  // }
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <CustomBar />
-        
         <Box
           component="main"
           sx={{
@@ -371,7 +371,7 @@ function DashboardContent({children}) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {body}
+            {children}
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>

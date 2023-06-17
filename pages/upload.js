@@ -79,7 +79,6 @@ import path from 'path';
                       inputProps={{ readOnly: true }}
                       fullWidth
                       variant="standard"
-                      defaultValue={pathname}
                       value={pathname}
                       InputLabelProps={{
                         shrink: true,

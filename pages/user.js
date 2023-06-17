@@ -1,8 +1,8 @@
-import { useMemo, useReducer } from "react";
-import * as React from "react";
 import dayjs from 'dayjs';
-import IGrid from "./itemgrid";
-import IForm from "./itemform";
+import * as React from "react";
+import {UForm, UGrid} from "../component/user";
+import { useMemo, useReducer  } from "react";
+const server = process.env.NEXT_PUBLIC_URL
 
 const initialState = {
     mode: 'view',
@@ -29,15 +29,11 @@ const reducer = (state, action) => {
   } 
 
 export default function User(props){
-    const [state, dispatch] = useReducer(reducer, initialState);
+
+    const [state, dispatch] = useReducer(reducer, initialState)
     // browse Category
     const browseCtg = async () => {
-        const res = await fetch("/api/category?browse=1", {
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            method: 'GET'
-        })
+        const res = await fetch(`${server}/api/category?browse=1`)
         const result = await res.json()
         const dtres = result.map((x) => { return {value: x.id, title: x.category_name}})
         return dtres
@@ -46,8 +42,9 @@ export default function User(props){
     // create
     const create = async (values) => {
         props.createProgress(true);
-        const res = await fetch('/api/item',{
+        const res = await fetch('/api/user',{
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             method: 'POST',
@@ -61,34 +58,29 @@ export default function User(props){
         } else {
             const err = await res.json();
             props.createNotif("error", err.message);
-            return err
         }
         return res
-        
     }
     // unlink
     const unlink = async (id, index) => {
         props.createProgress(true);
-        const res = await fetch(`/api/item?id=${id}&delete=1`,{
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          })
+        const res = await fetch(`${server}/api/user?id=${id}&delete=1`)
         props.createProgress(false);
         if (res.status === 200){
             dispatch({...state, type: 'ITEMS_DELETED', idx: index})
             props.createNotif('success', 'Data Has Been Delete')
         } else {
-            props.createNotif('error', 'Error Deleted')
+            const err = await res.json();
+            props.createNotif("error", err.message);
         }
         return res
     }
     // update
     const write = async (id, values) => {
         props.createProgress(true);
-        const res = await fetch('/api/item',{
+        const res = await fetch('/api/user',{
             headers: {
+                'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             method: 'PUT',
@@ -100,42 +92,53 @@ export default function User(props){
             dispatch({'type': 'CHANGE_MODE', mode: 'view'})
             props.createNotif("success", "Data Has Been Saved")
         } else {
-            props.createNotif("Error", "Error")
+            const err = await res.json();
+            props.createNotif("error", err.message);
         }
         return res
     }
 
 
-    const browse = async () => {
-        const res = await fetch("/api/item?browse=1", {
-            headers:{
-                'Content-Type': 'application/json'
-            },
-            method: 'GET'
-        })
-        const result = await res.json()
-        const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), categories: x.categories.category_name}})
-        dispatch({type: 'ITEMS_REQUESTED', items: dtres})
+    const getUser =  () => {
+        dispatch({type: 'ITEMS_REQUESTED', items: props.items})
     }
 
-    useMemo(() => browse(), [state.mode]);
-    if (state.mode === 'view'){
-        return (<IGrid 
-            rows={state.items} 
-            unlink={unlink}
-            changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
-            onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt}) }
+    useMemo(() => getUser(), [props.items]);
+
+    if (state.mode === "view"){
+        return (<UGrid 
+                    rows={state.items} 
+                    unlink={() => unlink}
+                    changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
+                    onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt}) }
+                />
+                )
+    } else if (state.mode === "edit") {
+        return (<UForm 
+                    mode={state.mode}
+                    data={state.data}
+                    write={write}
+                    getList={browseCtg}
+                    onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})}
         />)
-    } else if (state.mode === 'edit'){
-        return (<IForm 
-            mode={state.mode}
-            data={state.data}
-            getList={browseCtg}
-            write={write}
-            onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})} />)
-    } 
-    return (<IForm mode={state.mode}
-        create={create}
-        getList={browseCtg} 
-        onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})} />)
+    }
+
+    return (<UForm 
+                mode={state.mode}
+                create={create} 
+                getList={browseCtg}
+                onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})}
+            />)
+    //return <div>1</div> 
+}
+
+export async function getServerSideProps(context){
+    const res = await fetch(`${server}/api/user?browse=1`)
+    const result = await res.json()
+    const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
+    return {
+        props: {
+            items: dtres
+        }
+    }
 }

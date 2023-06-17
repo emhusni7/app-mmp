@@ -1,4 +1,3 @@
-import userObj from '../../data/karyawan.json';
 import { prisma } from "../../src/models/db"; 
 
 export default async(req, res) => {

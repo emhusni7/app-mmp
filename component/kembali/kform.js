@@ -33,7 +33,7 @@ const FHeader = (props) => {
     </Grid></>)
 }
 
-export default function FPinjam(props){
+export default function KForm(props){
 
     const mode = props.mode;
     let initial_val;

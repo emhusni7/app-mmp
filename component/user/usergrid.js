@@ -1,13 +1,12 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
-import { Button, Grid, IconButton } from "@mui/material";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Edit } from '@mui/icons-material';
-import {LinearProgress} from '@mui/material';
-
-
-
+import Edit from '@mui/icons-material/Edit';
+import LinearProgress from '@mui/material/LinearProgress';
 
 export default function UGrid(props) {
   
