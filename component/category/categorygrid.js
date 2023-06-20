@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
@@ -51,7 +51,9 @@ export default function CGrid(props) {
       <Button variant="contained" onClick={() => props.changeMode('create')} sx={{ mb: 2}}>Create</Button>
       <DataGrid
         slots={{
-          loadingOverlay: LinearProgress
+          loadingOverlay: LinearProgress,
+          toolbar: GridToolbar,
+          
         }}
         loading={props.rows.length === 0}
         rows={props.rows}
@@ -76,6 +78,7 @@ export default function CGrid(props) {
         disableRowSelectionOnClick
         getRowId= {(row) => row.id}
         experimentalFeatures={{ newEditingApi: true }}
+       
       />
     </Box>
   );

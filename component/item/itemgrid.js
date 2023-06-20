@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
@@ -57,7 +57,10 @@ export default function UGrid(props) {
     <Box sx={{ height: '100%', width: '100%' }}>
       <Button variant="contained" onClick={() => props.changeMode('create')} sx={{ mb: 2}}>Create</Button>
       <DataGrid
-        slots={{loadingOverlay: LinearProgress}}
+        slots={{
+          loadingOverlay: LinearProgress,
+          toolbar: GridToolbar,
+        }}
         loading={props.rows.length === 0}
         rows={props.rows}
         columns={columns}

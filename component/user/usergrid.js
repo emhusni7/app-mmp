@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
@@ -70,7 +70,8 @@ export default function UGrid(props) {
         rowsPerPageOptions={[25]}
         disableSelectionOnClick
         slots={{
-          loadingOverlay: LinearProgress
+          loadingOverlay: LinearProgress,
+          toolbar: GridToolbar,
         }}
         loading={props.rows.length === 0}
         disableRowSelectionOnClick

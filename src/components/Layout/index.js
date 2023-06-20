@@ -239,7 +239,7 @@ const CustomBar = (props) => {
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}
             >
-              <Avatar sx={{ width: 32, height: 32 }}>{user.username.toUpperCase()}</Avatar>
+              <Avatar sx={{ width: 32, height: 32 }}>{user.username.toUpperCase().substring(0,1)}</Avatar>
             </IconButton>
           </Tooltip>
           <Menu
