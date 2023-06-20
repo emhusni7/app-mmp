@@ -15,17 +15,20 @@ model User {
   username String @unique(map: "username") @db.VarChar(40)
   createdat DateTime @default(now()) @db.Timestamp(0)
   password String @db.VarChar(100)
+  menu Json? @db.Json
   categories CategoriesOnUsers[]
   @@map("users")
 }
 
 model Category {
   id Int @id @default(autoincrement())
-  category_name String @unique(map: "category_name") @db.VarChar(20)
+  category_name String @db.VarChar(20)
   createdat DateTime @default(now()) @db.Timestamp(0)
+  company String? @db.VarChar(20)
   users CategoriesOnUsers[]
   items Item[]
   @@map("category")	
+  @@unique([category_name, company])
 }
 
 
@@ -41,11 +44,12 @@ model CategoriesOnUsers {
 model Item{
   id Int @id @default(autoincrement())
   createdat DateTime @default(now()) @db.Timestamp(0)
-  item_name String @unique(map: "item_name") @db.VarChar(30)
+  item_name String @db.VarChar(30)
   description String @db.Text
   categories Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
   category_id Int
   trans_ids Transaction[]
+  @@unique([item_name, category_id])
 }
 
 model Transaction{

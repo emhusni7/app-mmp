@@ -27,7 +27,6 @@ function CustomizedInputBase(props){
         </IconButton>
         <InputBase
             sx={{ ml: 1, flex: 1 }}
-          
             placeholder="Search RFID"
             inputProps={{ 'aria-label': 'search rfid' }}
             value={props.value}

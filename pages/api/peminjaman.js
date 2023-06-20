@@ -1,6 +1,7 @@
 import userObj from '../../data/karyawan.json';
 import { prisma } from "../../src/models/db"; 
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default async(req, res) => {
     try {
         if (req.body.getUser && req.method === "POST"){

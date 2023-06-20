@@ -53,7 +53,7 @@ export default function UGrid(props) {
         rows={props.rows}
         columns={columns}
         pageSize={5}
-        rowHeight={30}
+        rowHeight={35}
         rowLength={25}
         sx={{
           overflow: 'auto',

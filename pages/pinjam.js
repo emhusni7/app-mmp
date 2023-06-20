@@ -1,4 +1,4 @@
-import React, { useReducer, useMemo } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import dayjs from 'dayjs';
 import {PGrid, PForm} from '../component/pinjam';
 const server = process.env.NEXT_PUBLIC_URL
@@ -46,7 +46,7 @@ export default function Pinjam(props){
             method: 'GET'
         })
         const result = await res.json()
-        const dtres = result.map((x) => { return {value: x.id, title: x.item_name, description: x.description}})
+        const dtres = result.map((x) => { return {value: x.id, title: `${x.item_name}  (${x.categories.company})`, description: x.description}})
         return dtres
     }
 
@@ -112,35 +112,39 @@ export default function Pinjam(props){
         return res
     }
 
-
-    const browse = async (page, limit) => {
-        const skip = page * limit;
-        const res = await fetch(`${server}/api/peminjaman`, {
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            method: 'POST',
-            body: JSON.stringify({
-                browse: 1,
-                where: {
-                    tgl_kembali: undefined,
-                    stUniq: 1
+    useEffect(() => {
+        async function fetchData(page, limit){
+            const skip = page * limit;
+            const res = await fetch(`${server}/api/peminjaman`, {
+                headers:{
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
                 },
-                skip: skip,
-                take: limit,
-                orderBy : {
-                    tgl_pinjam: 'desc'
-                }
+                method: 'POST',
+                body: JSON.stringify({
+                    browse: 1,
+                    where: {
+                        tgl_kembali: undefined,
+                        stUniq: 1
+                    },
+                    skip: skip,
+                    take: limit,
+                    orderBy : {
+                        tgl_pinjam: 'desc'
+                    }
+                })
             })
-        })
-        const result = await res.json()
-        const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
-        dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
-    }
-    useMemo(() => {browse(state.paginationModel.page, state.paginationModel.pageSize);
-    } , [state.paginationModel.page]);
-
+            const result = await res.json()
+            const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
+            dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
+        }
+        if (state.mode !== 'edit'){
+            fetchData(state.paginationModel.page, state.paginationModel.pageSize);
+        }
+        
+    },[state.paginationModel.page, state.paginationModel.pageSize, state.mode])
+    
+    
     if (state.mode === 'view'){
         return (<PGrid 
             rows={state.items} 

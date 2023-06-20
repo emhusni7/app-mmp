@@ -1,4 +1,4 @@
-import  {useMemo,  useState, useCallback} from 'react';
+
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 import Divider from '@mui/material/Divider';
@@ -8,13 +8,18 @@ import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
-import MenuIcon from '@mui/icons-material/Menu';
+// import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import DirectionsIcon from '@mui/icons-material/Directions';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import LinearProgress from '@mui/material/LinearProgress';
+import DoneAllTwoToneIcon from '@mui/icons-material/DoneAllTwoTone';
+import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
+import BackspaceTwoToneIcon from '@mui/icons-material/BackspaceTwoTone';
+import DirectionsIcon from '@mui/icons-material/Directions';
 import dayjs from 'dayjs';
+import Chip from '@mui/material/Chip';
+import {useState} from 'react';
 
 function CustomizedInputBase(props){
 
@@ -23,7 +28,7 @@ function CustomizedInputBase(props){
         sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', mb:'10px' }}
       > 
        <IconButton sx={{ p: '10px' }} aria-label="menu">
-          <MenuIcon />
+          {/* <MenuIcon /> */}
         </IconButton>
         <InputBase
             sx={{ ml: 1, flex: 1 }}
@@ -47,7 +52,7 @@ function CustomizedInputBase(props){
 export default function KGrid(props) {
 
   const columns = [
-    {field: 'id', hide: true},
+    // {field: 'id', hidden: true},
     { field: 'userid', headerName: 'User ID', width: 90 },
     {
       field: 'username',
@@ -81,28 +86,43 @@ export default function KGrid(props) {
       headerName: 'Kembali',
       sortable: false,
       width: 160,
+      renderCell: (index) =>{
+        return (index.row.tgl_kembali !== null ? dayjs(index.row.tgl_kembali).format("DD-MM-YYYY HH:mm"): "")
+      }
       
     },
-    {field: 'id', headerName: 'Actions', headerAlign: "center", align: 'center' , width: 200, renderCell: (index) => {
+    {
+      field: 'state',
+      headerName: 'Status',
+      sortable: false,
+      width: 160,
+      renderCell: (index) =>{
+        return (<Chip label={index.row.state} color={index.row.state === 'Pinjam'? "primary": index.row.state === "Done"? "success": "error"} variant="outlined" />)
+      }
+      
+    },
+    {field: 'id',headerName: 'Action', headerAlign: "center", align: 'center' , width: 70, renderCell: (index) => {
       return (
         <Grid container justifyContent={'center'}>
-          {/* <Grid item >
-            <IconButton onClick={async () => {
-              props.onEdit(index.row);
-            }}>
-               <Edit />
+          <Grid item >
+            {
+              index.row.tgl_kembali === null ? ( <>
+              <IconButton label="Done" name="Done" color="primary" onClick={() => props.onDone(index.row.id, index.api.getSortedRowIds().indexOf(index.row.id))}>
+              <DoneAllTwoToneIcon /> 
             </IconButton>
-            <IconButton sx={{pl:1}} onClick={async(e) => {
-               if(confirm("Yakin Hapus User ?") === true){
-                await props.unlink(index.row.id, index.api.getSortedRowIds().indexOf(index.row.id));
-               }
-            }}>
-             <DeleteIcon />
+            
+            <IconButton label="Hilang" name="Hilang" color="error" onClick={() => props.unlink(index.row.id, index.api.getSortedRowIds().indexOf(index.row.id))}>
+              <BackspaceTwoToneIcon /> 
             </IconButton>
-            </Grid> */}
+            </>): ""
+            }
+           
+            </Grid>
         </Grid>
             );
-    } }
+    } 
+  },
+ 
   ];
 
   const [value, setValue] = useState("");
@@ -136,9 +156,16 @@ export default function KGrid(props) {
   }
 
   const onKeyDown = (e) => {
+    
     if (e.key === "Enter"){
-      const str = getStr();
-      props.searchVal(JSON.stringify(str));
+      if (!value){
+        props.searchVal("");  
+      } else {
+        let str = getStr();
+        props.searchVal(JSON.stringify(str));
+        
+      }
+      
     }
   }
 
@@ -160,13 +187,13 @@ export default function KGrid(props) {
                 // slots={{
                 //   loadingOverlay: LinearProgress
                 // }}
-                loading={props.rows.length === 0 || props.loading}
+                loading={props.loading}
                 sx={{
-                  overflow: 'auto',
-                  '.MuiDataGrid-virtualScroller': {
-                    height: 'auto',
-                    overflow: 'hidden',
-                  },
+                  // overflow: 'auto',
+                  // '.MuiDataGrid-virtualScroller': {
+                  //   height: 'auto',
+                  //   overflow: 'hidden',
+                  // },
                   '.MuiDataGrid-main > div:nth-child(2)': {
                     overflowY: 'auto !important',
                     flex: 'unset !important',

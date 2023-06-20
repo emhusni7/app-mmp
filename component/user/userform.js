@@ -2,6 +2,7 @@ import { Grid, TextField, Box, Divider, Button } from "@mui/material";
 import { Formik, ErrorMessage } from 'formik';
 import * as yup from "yup";
 import Autosync from "../../src/components/Fields/autoComplete";
+import Autocomplete from '@mui/material/Autocomplete';
 
 export default function UForm(props){
     const {mode, data } = {...props}
@@ -11,7 +12,7 @@ export default function UForm(props){
     } else {
         let newctg = []
         if(data.categories){
-            newctg = data.categories.map((x) => ({title: x.category.category_name, value: x.category.id}))
+            newctg = data.categories.map((x) => ({title: `${x.category.category_name} - ${x.category.company}`, value: x.category.id}))
         }
         initial_val = {...data, categories: newctg}
     }
@@ -21,6 +22,7 @@ export default function UForm(props){
         username: yup.string().required("Username Is Required"),
         password: yup.string().required("Password Is Required"),
         categories: yup.array().required("Category Is Required"),
+        menu: yup.array()
     })
     
     return (
@@ -29,6 +31,7 @@ export default function UForm(props){
         validationSchema={BCSchema}
         onSubmit={(values, { resetForm, setSubmitting, setFieldError}) => {
             setTimeout(async() => {
+                console.log(values);
                 const newVal = values.categories.map((x) => (
                     {category:
                         {connect:
@@ -91,6 +94,28 @@ export default function UForm(props){
                         getListData={props.getList} 
                         multiple={true}>
                     </Autosync>
+                </Grid>
+                <Grid item xs={6}></Grid>
+                <Grid item xs={6}>
+                <Autocomplete
+                    required
+                    multiple={true}
+                    id="menu"
+                    fullWidth
+                    size="small"
+                    defaultValue={values.menu ? values.menu : []}
+                    name="menu"
+                    getOptionLabel={(option) => option.title}
+                    options={[
+                        {path: '/user', title: 'User', parent: 'Master', icon: ''},
+                        {path: '/category', title: 'Category', parent: 'Master', icon: ''},
+                        {path: '/item', title: 'Item', parent: 'Master', icon: ''},
+                        {path: '/pinjam', title: 'Pinjam', parent: 'Transaksi', icon: ''},
+                        {path: '/kembali', title: 'Kembali', parent: 'Transaksi', icon: ''},
+                    ]}
+                    onChange={(e, value) => setFieldValue("menu",value)}
+                    renderInput={(params) => <TextField {...params} error={true} variant="standard" label="Menu" />}
+                />
                 </Grid>
                 <Grid item xs={6}></Grid>
                 <Grid item xs={12}>

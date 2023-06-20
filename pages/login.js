@@ -2,7 +2,17 @@
 import { useRouter } from "next/router";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { TextField, Button, Paper, Grid, Avatar } from "@mui/material";
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import { Container } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockClockOutlined";
 import {CustomizedProgressBars} from '../src/components/Layout/loader';
 
@@ -46,8 +56,9 @@ function LoginForm() {
           username: values.username,
           password: values.password,
           state: values.state,
+          login: true,
         }
-        const res = await fetch('api/users',{
+        const res = await fetch('api/user',{
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -65,16 +76,55 @@ function LoginForm() {
       },
     });
 
-    const paperStyle={padding :20,height:'70vh',width:280, margin:"20px auto"}
-    const avatarStyle={backgroundColor:'#1bbd7e'}
 
     return (
-      <Grid>
-        <Paper elevation={10} style={paperStyle} >
-          <Grid align='center'>
-              <Avatar style={avatarStyle}><LockOutlinedIcon/></Avatar>
-              <h2>Sign In</h2>
-          </Grid>
+      <Container component="main" maxWidth={false}>
+      <Box
+        sx={{
+          margin: 1,
+          width: '100%',
+          height: '100vh',
+          display: 'flex'
+        }}
+      >
+        <Grid container>
+          <CssBaseline />
+          <Grid
+            item
+            xs={false}
+            sm={9}
+            md={9}
+            sx={{
+              backgroundImage: "url(/static/mmp.jpeg)",
+              backgroundRepeat: "no-repeat",
+              backgroundColor: (t) =>
+                t.palette.mode === "light"
+                  ? t.palette.grey[50]
+                  : t.palette.grey[900],
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <Grid
+            item
+            xs={12}
+            sm={3}
+            md={3}
+            component={Paper}
+            elevation={6}
+            square
+          >
+            <Box
+              sx={{
+                my: 8,
+                mx: 4,
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              <Typography component="h1" variant="h5">
+                <h2>Sign In</h2>
+              </Typography>
         <form onSubmit={formik.handleSubmit
         }>
           <TextField
@@ -103,13 +153,18 @@ function LoginForm() {
             helperText={formik.touched.password && formik.errors.password}
           />
           <div>{formik.isSubmitting ? (<CustomizedProgressBars />) : ("")}</div>
+          <br />
           <Button color="primary" variant="contained" fullWidth type="submit">
             Login
           </Button>
           {/* <NotificationContainer /> */}
-        </form>          
-        </Paper>
-      </Grid>
+        </form> 
+        </Box>
+          </Grid>
+        </Grid>
+      </Box>
+    </Container>
+   
     );
   };
 

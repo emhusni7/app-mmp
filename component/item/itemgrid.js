@@ -22,13 +22,13 @@ export default function UGrid(props) {
     {
       field: 'description',
       headerName: 'Description',
-      width: 400,
+      width: 300,
       editable: false,
     },
     {
       field: 'categories',
       headerName: 'Category',
-      width: 100,
+      width: 200,
       editable: false
     },
     { field: 'actions', headerName: 'Actions', headerAlign: "center", align: 'center' , width: 400, renderCell: (index) => {

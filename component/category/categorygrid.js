@@ -14,7 +14,13 @@ export default function CGrid(props) {
     {
       field: 'category_name',
       headerName: 'Category Name',
-      width: 500
+      width: 400
+     
+    },
+    {
+      field: 'company',
+      headerName: 'Company',
+      width: 100
      
     },
     { field: 'actions', headerName: 'Actions', headerAlign: "center", align: 'center' , width: 400, renderCell: (index) => {
@@ -51,7 +57,7 @@ export default function CGrid(props) {
         rows={props.rows}
         columns={columns}
         pageSize={5}
-        //rowHeight={35}
+        rowHeight={35}
         rowLength={25}
         sx={{
           overflow: 'auto',

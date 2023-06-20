@@ -1,4 +1,4 @@
-import { useMemo, useReducer } from "react";
+import { useEffect, useReducer, useCallback } from "react";
 
 import * as React from "react";
 import dayjs from 'dayjs';
@@ -32,12 +32,12 @@ const reducer = (state, action) => {
 export default function User(props){
     const [state, dispatch] = useReducer(reducer, initialState);
     // browse Category
-    const browseCtg = async () => {
+    const browseCtg = useCallback(async () => {
         const res = await fetch(`${server}/api/category?browse=1`)
         const result = await res.json()
-        const dtres = result.map((x) => { return {value: x.id, title: x.category_name}})
+        const dtres = result.map((x) => { return {value: x.id, title: `${x.category_name} - ${x.company}`}})
         return dtres
-    }
+    },[])
 
     // create
     const create = async (values) => {
@@ -100,10 +100,19 @@ export default function User(props){
 
 
     const browse = async () => {
-        dispatch({type: 'ITEMS_REQUESTED', items: props.items})
+        const res = await fetch(`${server}/api/item?browse=1`)
+        const result = await res.json()
+        const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), categories: `${x.categories.category_name} - ${x.categories.company}`}})
+        dispatch({type: 'ITEMS_REQUESTED', items: dtres})
     }
 
-    useMemo(() => browse(), [props.items]);
+    useEffect(() =>{
+        if (state.mode !== 'edit'){
+            browse();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } , [state.mode]);
+
     if (state.mode === 'view'){
         return (<IGrid 
             rows={state.items} 
@@ -125,13 +134,13 @@ export default function User(props){
         onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})} />)
 }
 
-export async function getServerSideProps(context){
-    const res = await fetch(`${server}/api/item?browse=1`)
-    const result = await res.json()
-    const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), categories: x.categories.category_name}})
-    return {
-        props: {
-            items: dtres
-        }
-    }
-}
+// export async function getServerSideProps(context){
+//     const res = await fetch(`${server}/api/item?browse=1`)
+//     const result = await res.json()
+//     const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), categories: x.categories.category_name}})
+//     return {
+//         props: {
+//             items: dtres
+//         }
+//     }
+// }

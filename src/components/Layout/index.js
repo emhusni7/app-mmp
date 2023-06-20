@@ -14,7 +14,7 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
-import MenuIcon from '@mui/icons-material/Menu';
+import Menu from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 
@@ -100,7 +100,7 @@ const mdTheme = createTheme();
 
 
 const StyledMenu = styled((props) => (
-  <MenuIcon
+  <Menu
     elevation={0}
     anchorOrigin={{
       vertical: 'bottom',
@@ -211,7 +211,7 @@ const CustomBar = () => {
       ...(open && { display: 'none' }),
     }}
   >
-    <MenuIcon />
+    <Menu />
   </IconButton>
   <Typography
     component="h1"
@@ -329,28 +329,30 @@ const CustomBar = () => {
 
 function DashboardContent({children}) {
   
- //const {asPath} = useRouter();
-  // let body;
-  // if (asPath.includes("peminjaman")){
-  //   body = children 
-  // } else {
-  //   body =  <Grid container spacing={3}>
-  //   <Grid item xs={12} md={12} lg={12}>
-  //     <Paper
-  //       sx={{
-  //         p: 2,
-  //         display: 'flex',
-  //         flexDirection: 'column',
-  //         height: '100%',
+ const {asPath} = useRouter();
+  let body;
+  if (asPath.includes("pinjam") || asPath.includes("kembali")){
+    body = children 
+  } else {
+    body =  <Grid container spacing={3}>
+    <Grid item xs={12} md={12} lg={12}>
+      <Paper
+        sx={{
+          p: 2,
+          display: 'flex',
+          flexDirection: 'column',
+          height: '100%',
           
-  //       }}
-  //     >
-  //      {children}
-  //     </Paper>
-  //   </Grid>
+        }}
+      >
+      <Box sx={{ height: 108 + (35 * 20) + 'px'} }>
+        {children}
+      </Box>
+      </Paper>
+    </Grid>
     
-  // </Grid>
-  // }
+  </Grid>
+  }
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -371,7 +373,8 @@ function DashboardContent({children}) {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {children}
+           {body}
+           
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>

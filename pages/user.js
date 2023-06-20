@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import * as React from "react";
 import {UForm, UGrid} from "../component/user";
-import { useMemo, useReducer  } from "react";
+import { useEffect, useReducer, useCallback  } from "react";
 const server = process.env.NEXT_PUBLIC_URL
 
 const initialState = {
@@ -35,13 +35,15 @@ export default function User(props){
     const browseCtg = async () => {
         const res = await fetch(`${server}/api/category?browse=1`)
         const result = await res.json()
-        const dtres = result.map((x) => { return {value: x.id, title: x.category_name}})
+        const dtres = result.map((x) => { return {value: x.id, title: `${x.category_name} - ${x.company}`}})
         return dtres
     }
 
     // create
     const create = async (values) => {
+        
         props.createProgress(true);
+        
         const res = await fetch('/api/user',{
             headers: {
                 'Accept': 'application/json',
@@ -98,12 +100,21 @@ export default function User(props){
         return res
     }
 
+    
 
-    const getUser =  () => {
-        dispatch({type: 'ITEMS_REQUESTED', items: props.items})
+    const getUser = async () => {
+        const res = await fetch(`${server}/api/user?browse=1`)
+        const result = await res.json()
+        const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
+        dispatch({type: 'ITEMS_REQUESTED', items: dtres})
     }
 
-    useMemo(() => getUser(), [props.items]);
+    useEffect(() =>{
+        if (state.mode !== 'edit'){
+            getUser();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } , [state.mode]);
 
     if (state.mode === "view"){
         return (<UGrid 
@@ -130,15 +141,4 @@ export default function User(props){
                 onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})}
             />)
     //return <div>1</div> 
-}
-
-export async function getServerSideProps(context){
-    const res = await fetch(`${server}/api/user?browse=1`)
-    const result = await res.json()
-    const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
-    return {
-        props: {
-            items: dtres
-        }
-    }
 }

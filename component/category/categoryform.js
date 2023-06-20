@@ -1,4 +1,5 @@
 import { Grid, TextField, Box, Divider, Button } from "@mui/material";
+import Autocomplete from '@mui/material/Autocomplete';
 import { Formik } from 'formik';
 import * as yup from "yup";
 export default function CForm(props){
@@ -11,6 +12,7 @@ export default function CForm(props){
     }
     const BCSchema = yup.object({
         category_name: yup.string().required("Category Name is required"),
+        company: yup.string().required("Company is Required")
     })
     
     
@@ -18,7 +20,8 @@ export default function CForm(props){
     <Formik 
         initialValues={initial_val}
         validationSchema={BCSchema}
-        onSubmit={(values, { resetForm, setSubmitting, setFieldError}) => {
+        onSubmit={(values, { resetForm, setSubmitting, setFieldError, setFieldValue}) => {
+            console.log(values);
             setTimeout(async() => {
                 if (mode === 'create'){
                     await props.create(values);
@@ -48,7 +51,21 @@ export default function CForm(props){
             <Grid item xs={6}>
                 <TextField value={values.category_name} variant="standard" onChange={handleChange} size="small" name="category_name" id="category_name" fullWidth placeholder="Category Name" required />
             </Grid>
-            <Grid xs={6}></Grid>
+            <Grid item xs={6}>
+            </Grid>
+            <Grid item xs={6}> 
+            <Autocomplete
+                required
+                id="company"
+                fullWidth
+                size="small"
+                defaultValue={values.company}
+                name="company"
+                getOptionLabel={(option) => option}
+                options={["BB","MMP"]}
+                onChange={(e, value) => setFieldValue("company",value)}
+                renderInput={(params) => <TextField {...params} error={true} variant="standard" label="Company" />}
+                /></Grid>
             <Grid item xs={12}>
                 <Divider />
                 <br></br>

@@ -1,10 +1,20 @@
 import { prisma } from "../../src/models/db"; 
+import bcrypt from "bcrypt";
 
+
+
+// eslint-disable-next-line import/no-anonymous-default-export
 export default async (req, res) => {
     try {
         let result;
-        if (req.method === "POST"){
+        
+        if (req.method === "POST" && !req.body.login){
             result = await createUser(req.body);
+        } else if (req.method === "POST" && req.body.login){
+            result = await login(req.body.username, req.body.password);
+            if (!result){
+                return res.status(500).json({'message': e.message});
+            }
         } else if(req.method === "GET" && req.query.browse){
             result = await getUser()
         } else if (req.method === "GET" && req.query.delete){
@@ -25,8 +35,10 @@ export default async (req, res) => {
 
 
 const createUser = async (value) => {
+    const newpass = await bcrypt.hashSync(value.password)  
+    const newVal = {...values, password: newpass}
     const result = prisma.user.create({
-        data: value
+        data: newVal
     });
     return result
 }
@@ -66,9 +78,27 @@ const delUser = async (id) => {
 const write = async (id, values) => {
     delete values['id']; 
     delete values['createdat']
+    const newpass = await bcrypt.hashSync(values.password,10)  
+    const newVal = {...values, password: newpass}
     const result = await prisma.user.update({
         where: { id: Number(id)},
-        data: values
+        data: newVal
     })
     return result
+}
+
+
+const login = async (username, password) => {
+    const user = await prisma.user.findUnique({
+        where: {
+            username: username
+        }
+    })
+    const result = await bcrypt.compareSync(password, user.password);
+    console.log(result);
+    if (result){
+        return user
+    } else {
+        return undefined
+    }
 }

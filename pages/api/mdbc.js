@@ -14,6 +14,7 @@ export const config = {
 const dataFilePath = path.join(process.cwd(), 'data/karyawan.json');
 const dataDir = path.join(process.cwd(), "data");
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default async (req, res) => {
     try {
         if (req.  method === "POST"){

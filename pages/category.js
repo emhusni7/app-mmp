@@ -1,4 +1,4 @@
-import { useCallback, useReducer, useMemo } from "react";
+import { useCallback, useReducer, useEffect } from "react";
 import * as React from "react";
 import dayjs from 'dayjs';
 import {CGrid, CForm} from "../component/category";
@@ -93,15 +93,24 @@ export default function Category(props){
     }
 
 
-    const browse = () =>{
-        dispatch({type: 'ITEMS_REQUESTED', items: props.items})
+    const browse = async () =>{
+        const res = await fetch(`${server}/api/category?browse=1`)
+        const result = await res.json()
+        const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
+        dispatch({type: 'ITEMS_REQUESTED', items: dtres})
     }
 
-    useMemo(() => browse(), [props.items]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() =>{
+        if (state.mode !== 'edit'){
+            browse();
+        }
+    }, [state.mode]);
+    
     if (state.mode === 'view'){
         return (<CGrid 
             rows={state.items} 
-            unlink={() => unlink}
+            unlink={unlink}
             changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
             onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt}) }
         />)
@@ -117,13 +126,13 @@ export default function Category(props){
         onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})} />)
 }
 
-export async function getServerSideProps(context){
-    const res = await fetch(`${server}/api/category?browse=1`)
-    const result = await res.json()
-    const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
-    return {
-        props: {
-            items: dtres
-        }
-    }
-}
+// export async function getServerSideProps(context){
+//     const res = await fetch(`${server}/api/category?browse=1`)
+//     const result = await res.json()
+//     const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
+//     return {
+//         props: {
+//             items: dtres
+//         }
+//     }
+// }
