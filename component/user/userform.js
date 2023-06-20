@@ -104,7 +104,7 @@ export default function UForm(props){
                     size="small"
                     defaultValue={values.menu ? values.menu : []}
                     name="menu"
-                    getOptionLabel={(option) => option.title}
+                    getOptionLabel={(option) => `${option.parent} - ${option.title}` }
                     options={[
                         {path: '/user', title: 'User', parent: 'Master', icon: ''},
                         {path: '/category', title: 'Category', parent: 'Master', icon: ''},

@@ -86,7 +86,7 @@ const write = async (id, values) => {
     delete values['password']
     const result = await prisma.user.update({
         where: { id: Number(id)},
-        data: newVal
+        data: values
     })
     return result
 }

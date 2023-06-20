@@ -15,7 +15,7 @@ const ColorChips = (props) => {
     );
   }
 
-const FHeader = (props) => {
+export const FHeader = (props) => {
     return (<>
    
     <Grid item xs={6}>

@@ -14,6 +14,7 @@ import DirectionsIcon from '@mui/icons-material/Directions';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import LinearProgress from '@mui/material/LinearProgress';
+
 import dayjs from 'dayjs';
 
 function CustomizedInputBase(props){
@@ -138,7 +139,9 @@ export default function PGrid(props) {
 
   
   return (
+    
     <Grid container spacing={2}>
+        
         <Grid item xs={12} md={12} lg={12}>
             <CustomizedInputBase  value={value} onChange={(e) => changeRFID(e)} onEnter={(e) => onKeyDown(e)} />
             <Paper
@@ -150,7 +153,10 @@ export default function PGrid(props) {
                 
                 }}
             >
+              {/* <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>PINJAM</Box> */}
+        
             <Box sx={{ height: 108 + (35 * 20) + 'px'} }>
+            
             <DataGrid
                 slots={{
                   loadingOverlay: LinearProgress
