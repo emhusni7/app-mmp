@@ -1,5 +1,6 @@
 import { prisma } from "../../src/models/db"; 
 import bcrypt from "bcrypt";
+import { cookies } from 'next/headers'
 
 
 
@@ -95,8 +96,11 @@ const login = async (username, password) => {
         }
     })
     const result = await bcrypt.compareSync(password, user.password);
-    console.log(result);
+    
     if (result){
+        delete user['id']; 
+        delete user['password'];
+        cookies.set(user);
         return user
     } else {
         return undefined
