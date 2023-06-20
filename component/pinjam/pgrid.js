@@ -46,10 +46,10 @@ function CustomizedInputBase(props){
 }
 
 
-export default function UGrid(props) {
+export default function PGrid(props) {
 
   const columns = [
-    {field: 'id', type: 'hidden'},
+    
     { field: 'userid', headerName: 'ID', width: 90 },
     {
       field: 'username',
@@ -87,7 +87,7 @@ export default function UGrid(props) {
     },
     {field: 'id', headerName: 'Actions', headerAlign: "center", align: 'center' , width: 200, renderCell: (index) => {
       return (
-        <Grid container justifyContent={'center'}>
+        <Grid key={index.row.id} container justifyContent={'center'}>
           <Grid item >
             <IconButton onClick={async () => {
               props.onEdit(index.row);
@@ -140,7 +140,7 @@ export default function UGrid(props) {
   return (
     <Grid container spacing={2}>
         <Grid item xs={12} md={12} lg={12}>
-            <CustomizedInputBase value={value} onChange={(e) => changeRFID(e)} onEnter={(e) => onKeyDown(e)} />
+            <CustomizedInputBase  value={value} onChange={(e) => changeRFID(e)} onEnter={(e) => onKeyDown(e)} />
             <Paper
                 sx={{
                 p: 2,
@@ -172,7 +172,7 @@ export default function UGrid(props) {
                 disableRowSelectionOnClick
                 disableColumnMenu
                 rowHeight={35}
-                rowCount={props.rowCount}
+                
                 rows={props.rows}
                 columns={columns}
                 pageSizeOptions={[25]}

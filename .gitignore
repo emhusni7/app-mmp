@@ -40,3 +40,12 @@ prisma/migrations/20230612061210_uname/migration.sql
 prisma/migrations/20230612064611_alter_trx/migration.sql
 prisma/migrations/20230612065425_alter_trx2/migration.sql
 prisma/migrations/20230612073007_alter_trx2/migration.sql
+prisma/migrations/20230619061500_recon/migration.sql
+prisma/migrations/20230619061604_recon/migration.sql
+prisma/migrations/20230619064634_recon/migration.sql
+prisma/migrations/20230619075044_recon/migration.sql
+.gitignore
+.gitignore
+.gitignore
+.gitignore
+.gitignore

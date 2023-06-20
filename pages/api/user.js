@@ -1,6 +1,6 @@
 import { prisma } from "../../src/models/db"; 
 import bcrypt from "bcrypt";
-import { cookies } from 'next/headers'
+import { getCookies, getCookie, setCookie, deleteCookie } from 'cookies-next';
 
 
 
@@ -13,8 +13,12 @@ export default async (req, res) => {
             result = await createUser(req.body);
         } else if (req.method === "POST" && req.body.login){
             result = await login(req.body.username, req.body.password);
+            
             if (!result){
-                return res.status(500).json({'message': e.message});
+                return res.status(500).json({'message': 'User Not Found'});
+            } else{
+                setCookie('user', result, {req, res});
+            
             }
         } else if(req.method === "GET" && req.query.browse){
             result = await getUser()
@@ -79,8 +83,7 @@ const delUser = async (id) => {
 const write = async (id, values) => {
     delete values['id']; 
     delete values['createdat']
-    const newpass = await bcrypt.hashSync(values.password,10)  
-    const newVal = {...values, password: newpass}
+    delete values['password']
     const result = await prisma.user.update({
         where: { id: Number(id)},
         data: newVal
@@ -95,12 +98,11 @@ const login = async (username, password) => {
             username: username
         }
     })
+   
     const result = await bcrypt.compareSync(password, user.password);
-    
     if (result){
         delete user['id']; 
         delete user['password'];
-        cookies.set(user);
         return user
     } else {
         return undefined

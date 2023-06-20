@@ -4,9 +4,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import MuiDrawer from '@mui/material/Drawer';
 import Box from '@mui/material/Box';
 import MuiAppBar from '@mui/material/AppBar';
+import Avatar from '@mui/material/Avatar';
 import Toolbar from '@mui/material/Toolbar';
+import MenuItem from '@mui/material/MenuItem';
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Tooltip from '@mui/material/Tooltip';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Badge from '@mui/material/Badge';
@@ -14,13 +18,13 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Link from '@mui/material/Link';
-import Menu from '@mui/icons-material/Menu';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
+
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
@@ -31,7 +35,6 @@ import StarBorder from '@mui/icons-material/StarBorder';
 import { useRouter } from 'next/router';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
-
 import { ArrowBackIosNewOutlined } from "@mui/icons-material";
 import LogoutIcon from '@mui/icons-material/Logout';
 // import { styled, alpha } from '@mui/material/styles';
@@ -183,9 +186,13 @@ const Footer = () => {
   );
 };
 
-const CustomBar = () => {
+const CustomBar = (props) => {
+  
   const [open, setOpen] = React.useState(true);
   const [pinjam, setPinjam] = React.useState(true);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const router = useRouter();
+  const user = JSON.parse(props.user);
   const handleClick = () => {
     setOpen(!open);
   };
@@ -195,41 +202,76 @@ const CustomBar = () => {
   const handlePinjam = () => {
     setPinjam(!pinjam);
   };
-  return (<><AppBar style={{ background: '#212121' }} position="absolute" open={open}>
-<Toolbar
-  sx={{
-    pr: '24px', // keep right padding when drawer closed
-  }}
->
-  <IconButton
-    edge="start"
-    color="inherit"
-    aria-label="open drawer"
-    onClick={toggleDrawer}
-    sx={{
-      marginRight: '36px',
-      ...(open && { display: 'none' }),
-    }}
-  >
-    <Menu />
-  </IconButton>
-  <Typography
-    component="h1"
-    variant="h6"
-    color="inherit"
-    noWrap
-    sx={{ flexGrow: 1 }}
-  >
-    Dashboard
-  </Typography>
-  <IconButton color="inherit">
-    <Badge badgeContent={4} color="secondary">
-      <NotificationsIcon />
-    </Badge>
-  </IconButton>
-</Toolbar>
-</AppBar>
-<Drawer variant="permanent" open={open}>
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  return (<>
+  <AppBar style={{ background: '#212121' }} position="absolute" open={open}>
+      <Toolbar
+        sx={{
+          pr: '24px', // keep right padding when drawer closed
+        }}
+      >
+          <Menu />
+        <Typography
+          component="h1"
+          variant="h6"
+          color="inherit"
+          noWrap
+          sx={{ flexGrow: 1 }}
+        >
+          Dashboard
+        </Typography>
+        
+        <Box sx={{ flexGrow: 0 }}>
+          <Tooltip title="Account">
+            <IconButton
+              onClick={handleOpenUserMenu}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={open ? 'account-menu' : undefined}
+              aria-haspopup="true"
+              aria-expanded={open ? 'true' : undefined}
+            >
+              <Avatar sx={{ width: 32, height: 32 }}>{user.username.toUpperCase()}</Avatar>
+            </IconButton>
+          </Tooltip>
+          <Menu
+              sx={{ mt: '45px' }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+          <MenuItem onClick={() => {
+              deleteCookie('user');
+              router.push("/login")}}>
+              <ListItemIcon  >
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
+            <Divider />
+            </Menu>
+        </Box>
+      </Toolbar>
+      </AppBar>
+      <Drawer variant="permanent" open={open}>
           <Toolbar
             sx={{
               display: 'flex',
@@ -243,86 +285,47 @@ const CustomBar = () => {
             </IconButton>
           </Toolbar>
           <Divider />  
-           {/* <List component="nav">
-            <ListItemButton key={"Master"} >
-              <ListItemIcon>
-                <InboxIcon />
-              </ListItemIcon>
-              <ListItemText primary={"Master"} />
-              {pinjam ? <ExpandLess /> : <ExpandMore />}
-            </ListItemButton>
-             
-            <List component="div" disablePadding>
-              <ListItemButton key="User" href="/user" sx={{ pl: 3 }}>
-                <ListItemIcon>
-                  <StarBorder />
+            <List component="nav">
+              <ListItemButton key="MasterButton">
+                <ListItemIcon key="MasterIcon">
+                  <InboxIcon />
                 </ListItemIcon>
-                <ListItemText primary="User" />
+                <ListItemText key="MasterText">Master</ListItemText>
+                <ExpandMore />
               </ListItemButton>
+              { user.menu.map((x) => {
+                  if (x.parent === 'Master'){
+                    return (<List key={x.title} component="div" disablePadding>
+                      <ListItemButton href={x.path} sx={{ pl: 3 }}>
+                        <ListItemIcon>
+                          <StarBorder />
+                        </ListItemIcon>
+                        <ListItemText primary={x.title} />
+                      </ListItemButton>
+                  </List>)
+                  }
+              })}
+              <ListItemButton key="TransaksiButton">
+                <ListItemIcon key="TransaksiIcon">
+                  <InboxIcon />
+                </ListItemIcon>
+                <ListItemText key="TransaksiText">Transaksi</ListItemText>
+                <ExpandMore />
+              </ListItemButton>
+              { user.menu.map((x) => {
+                  if (x.parent === 'Transaksi'){
+                    return (<List key={x.title} component="div" disablePadding>
+                      <ListItemButton href={x.path} sx={{ pl: 3 }}>
+                        <ListItemIcon>
+                          <StarBorder />
+                        </ListItemIcon>
+                        <ListItemText primary={x.title} />
+                      </ListItemButton>
+                  </List>)
+                  }
+              })}
             </List>
-            <List component="div" disablePadding>
-              <ListItemButton key="Category" href="/category" sx={{ pl: 3 }}>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText primary="Category" />
-              </ListItemButton>
-            </List>
-            <List component="div" disablePadding>
-              <ListItemButton key="Item" href="item" sx={{ pl: 3 }}>
-                <ListItemIcon>
-                  <StarBorder />
-                </ListItemIcon>
-                <ListItemText primary="Item" />
-              </ListItemButton>
-            </List>
-          </List>
-          <Divider />
-          <List component="nav">
-          {['Peminjaman'].map((text, index) => (
-            <>
-              <ListItemButton key={index} onClick={handlePinjam}>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-                {pinjam ? <ExpandLess /> : <ExpandMore />}
-              </ListItemButton>
-              <Collapse in={pinjam} timeout="auto" unmountOnExit>
-                <List component="div" disablePadding>
-                  <ListItemButton key="pinjam" href="peminjaman" sx={{ pl: 3 }}>
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="Pinjam" />
-                  </ListItemButton>
-                </List>
-                <List component="div" disablePadding>
-                  <ListItemButton key="kembali" href="kembali" sx={{ pl: 3 }}>
-                    <ListItemIcon>
-                      <StarBorder />
-                    </ListItemIcon>
-                    <ListItemText primary="Kembali" />
-                  </ListItemButton>
-                </List>
-          </Collapse>
-              </>
-          ))}
-            <Divider sx={{ my: 1 }} />
-            <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-          </List>  */}
+           
         </Drawer>
         </>
 )}
@@ -330,6 +333,7 @@ const CustomBar = () => {
 function DashboardContent({children}) {
   
  const {asPath} = useRouter();
+ const user = getCookie('user');
   let body;
   if (asPath.includes("pinjam") || asPath.includes("kembali")){
     body = children 
@@ -358,7 +362,7 @@ function DashboardContent({children}) {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <CustomBar />
+        <CustomBar user={user} />
         <Box
           component="main"
           sx={{
@@ -382,6 +386,4 @@ function DashboardContent({children}) {
     </ThemeProvider>
   );
 }
-
-export default DashboardContent
-//export default withAuth(DashboardContent)
+export default withAuth(DashboardContent)

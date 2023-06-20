@@ -20,7 +20,6 @@ export default function UForm(props){
     
     const BCSchema = yup.object({
         username: yup.string().required("Username Is Required"),
-        password: yup.string().required("Password Is Required"),
         categories: yup.array().required("Category Is Required"),
         menu: yup.array()
     })
@@ -78,7 +77,7 @@ export default function UForm(props){
                 </Grid>
                 <Grid item xs={6}></Grid>
                 <Grid item xs={6}>
-                    <TextField required variant="standard" value={values.password} onChange={handleChange} size="small" name="password" type="password" fullWidth  id="password" placeholder="Password"  />
+                    <TextField variant="standard"  onChange={handleChange} size="small" name="password" type="password" fullWidth  id="password" placeholder="Password"  />
                 </Grid>
                 <Grid item xs={6}></Grid>
                 <Grid item xs={6}>
@@ -112,6 +111,7 @@ export default function UForm(props){
                         {path: '/item', title: 'Item', parent: 'Master', icon: ''},
                         {path: '/pinjam', title: 'Pinjam', parent: 'Transaksi', icon: ''},
                         {path: '/kembali', title: 'Kembali', parent: 'Transaksi', icon: ''},
+                        {path: '/upload', title: 'Sync', parent: 'Transaksi', icon: ''},
                     ]}
                     onChange={(e, value) => setFieldValue("menu",value)}
                     renderInput={(params) => <TextField {...params} error={true} variant="standard" label="Menu" />}
