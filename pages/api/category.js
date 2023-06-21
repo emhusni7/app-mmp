@@ -1,4 +1,5 @@
 import { prisma } from "../../src/models/db"; 
+import { getCookie } from 'cookies-next';
 
 
 // eslint-disable-next-line import/no-anonymous-default-export
@@ -8,7 +9,7 @@ export default async (req, res) => {
             const result = await create(req.body);
             return res.status(200).json(result);
         } else if(req.method === "GET" && req.query.browse){
-            const result = await browse()
+            const result = await browse(req, res)
             return res.status(200).json(result);
         } else if (req.method === "GET" && req.query.delete){
             const result = await unlink(req.query.id);
@@ -30,10 +31,23 @@ const create = async (value) => {
     return result
 }
 
-const browse =async () => {
-    const result = await prisma.category.findMany({
-        orderBy: [{createdat: 'desc'}]
-    })
+const browse =async (req, res) => {
+    let usrJson = JSON.parse(getCookie('user', {req, res}));
+    usrJson = usrJson.categories.map((x) => x.categoryid)
+    let jsonStr;
+    if (usrJson.length > 0){
+       jsonStr = {
+        where: {
+            id: {in: usrJson }
+        },
+        orderBy: [{createdat: 'desc'}],
+        }
+    } else {
+        jsonStr = {
+        orderBy: [{createdat: 'desc'}],
+        }
+    }
+    const result = await prisma.category.findMany(jsonStr)
     return result
 }
 

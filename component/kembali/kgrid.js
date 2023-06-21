@@ -20,6 +20,7 @@ import DirectionsIcon from '@mui/icons-material/Directions';
 import dayjs from 'dayjs';
 import Chip from '@mui/material/Chip';
 import {useState} from 'react';
+import { useAppContext } from '../../src/models/withAuthorization';
 
 function CustomizedInputBase(props){
 
@@ -50,6 +51,7 @@ function CustomizedInputBase(props){
 
 
 export default function KGrid(props) {
+
 
   const columns = [
     // {field: 'id', hidden: true},
@@ -126,6 +128,7 @@ export default function KGrid(props) {
   ];
 
   const [value, setValue] = useState("");
+  const { user} = useAppContext();
   
   const changeRFID = (e) => {
     setValue(e.target.value)
@@ -148,7 +151,12 @@ export default function KGrid(props) {
           }
       ],
         tgl_kembali: undefined,
-        stUniq: 1
+        stUniq: 1,
+        items: {
+          categories: {
+            id: {in: user.categories.map((x) => x.categoryid)}
+          }
+        }
     },
       skip: 0,
       take: 20,
@@ -189,11 +197,6 @@ export default function KGrid(props) {
                 // }}
                 loading={props.loading}
                 sx={{
-                  // overflow: 'auto',
-                  // '.MuiDataGrid-virtualScroller': {
-                  //   height: 'auto',
-                  //   overflow: 'hidden',
-                  // },
                   '.MuiDataGrid-main > div:nth-child(2)': {
                     overflowY: 'auto !important',
                     flex: 'unset !important',
@@ -204,7 +207,6 @@ export default function KGrid(props) {
                 disableRowSelectionOnClick
                 disableColumnMenu
                 rowHeight={35}
-                rowCount={props.rowCount}
                 rows={props.rows}
                 columns={columns}
                 pageSizeOptions={[25]}

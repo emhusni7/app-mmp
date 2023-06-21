@@ -2,6 +2,7 @@ import React, { useReducer, useEffect } from 'react';
 import dayjs from 'dayjs';
 import {PGrid, PForm} from '../component/pinjam';
 const server = process.env.NEXT_PUBLIC_URL
+import { useAppContext } from '../src/models/withAuthorization';
 
 const initialState = {
     mode: 'view',
@@ -35,8 +36,8 @@ const reducer = (state, action) => {
   } 
 
 export default function Pinjam(props){
-    const [state, dispatch] = useReducer(reducer, initialState)
-
+    const [state, dispatch] = useReducer(reducer, initialState);
+    const { user } = useAppContext();
     // Browse Item
     const browseItem = async () => {
         const res = await fetch("/api/item?browse=1", {
@@ -114,14 +115,27 @@ export default function Pinjam(props){
 
     useEffect(() => {
         async function fetchData(page, limit){
+
             const skip = page * limit;
-            const res = await fetch(`${server}/api/peminjaman`, {
-                headers:{
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST',
-                body: JSON.stringify({
+            let jsonStr;
+            if (user.categories.length > 0){
+                jsonStr = {
+                    browse: 1,
+                    where: {
+                        tgl_kembali: undefined,
+                        stUniq: 1,
+                        items: {
+                            categories: {id: {in: user.categories.map((x) => x.categoryid)}}
+                        }
+                    },
+                    skip: skip,
+                    take: limit,
+                    orderBy : {
+                        tgl_pinjam: 'desc'
+                    }
+                }
+            } else {
+                jsonStr = {
                     browse: 1,
                     where: {
                         tgl_kembali: undefined,
@@ -132,7 +146,15 @@ export default function Pinjam(props){
                     orderBy : {
                         tgl_pinjam: 'desc'
                     }
-                })
+                } 
+            }
+            const res = await fetch(`${server}/api/peminjaman`, {
+                headers:{
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify(jsonStr)
             })
             const result = await res.json()
             const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
@@ -153,7 +175,6 @@ export default function Pinjam(props){
             changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
             onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt})}
             paginationModel={state.paginationModel}
-            rowCount={state.rowLength}
             createNotif={props.createNotif}
             createProgress={props.createProgress}
             setPaginationModel={(env) => dispatch({type: 'SET_PAGINATION', page: env.page})}

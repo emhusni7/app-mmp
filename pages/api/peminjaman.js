@@ -49,7 +49,11 @@ const browse =async (where , skip , take, orderBy) => {
 
     const [data, count] = await prisma.$transaction([
         prisma.transaction.findMany({skip: skip, take: take, where: where, orderBy: orderBy, include:{
-                items: true
+                items: {
+                    include: {
+                        categories: true
+                    } 
+                }
             }
         }),
         prisma.transaction.count({where})

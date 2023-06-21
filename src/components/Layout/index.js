@@ -335,7 +335,8 @@ function DashboardContent({children}) {
  const {asPath} = useRouter();
  const user = getCookie('user');
   let body;
-  if (asPath.includes("pinjam") || asPath.includes("kembali")){
+  console.log(asPath)
+  if (asPath.includes("pinjam") || asPath.includes("kembali") || asPath === '/'){
     body = children 
   } else {
     body =  <Grid container spacing={3}>

@@ -13,12 +13,10 @@ export default async (req, res) => {
             result = await createUser(req.body);
         } else if (req.method === "POST" && req.body.login){
             result = await login(req.body.username, req.body.password);
-            
             if (!result){
                 return res.status(500).json({'message': 'User Not Found'});
             } else{
                 setCookie('user', result, {req, res});
-            
             }
         } else if(req.method === "GET" && req.query.browse){
             result = await getUser()
@@ -96,9 +94,14 @@ const login = async (username, password) => {
     const user = await prisma.user.findUnique({
         where: {
             username: username
+        },
+        include: {
+            categories: true
         }
     })
-   
+
+    console.log(user);
+
     const result = await bcrypt.compareSync(password, user.password);
     if (result){
         delete user['id']; 

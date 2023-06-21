@@ -1,7 +1,8 @@
 import React, { useReducer, useEffect, useCallback } from 'react';
 import {KGrid, KForm} from '../component/kembali';
 import dayjs from 'dayjs';
-const server = process.env.NEXT_PUBLIC_URL
+import { useAppContext } from '../src/models/withAuthorization';
+const server = process.env.NEXT_PUBLIC_URL;
 
 
 const initialState = {
@@ -42,7 +43,7 @@ const reducer = (state, action) => {
 
 export default function Kembali(props){
     const [state, dispatch] = useReducer(reducer, initialState)
-
+    const { user } = useAppContext();
     // Browse Item
     const browseItem = async () => {
         const res = await fetch(`${server}/api/item?browse=1`)
@@ -137,16 +138,47 @@ export default function Kembali(props){
 
     useEffect(() => {
         let jsonDt;
+        
+        const usrCateg = user.categories.map((x) => x.categoryid);
+        
         async function fetchData(){
             dispatch({type: 'SET_LOADING', loading: true})
+
             if (!!state.searchVal){
-            jsonDt = state.searchVal;       
+                jsonDt = state.searchVal;       
             } else {
-            jsonDt = JSON.stringify({
-                browse: 1,
-                orderBy : {
-                    tgl_pinjam: 'desc'
-                }})  
+                if (usrCateg.length > 0){
+                    jsonDt = JSON.stringify({
+                        where: {
+                            items: {
+                                categories: {id: {in: usrCateg}  
+                                }
+                            }
+                        },
+                        browse: 1,
+                        include:{
+                            items: {
+                                categories: {
+                                    id: {in: usrCateg }
+                                }
+                            }
+                        },
+                        orderBy : {
+                            tgl_pinjam: 'desc'
+                        }})
+                } else {
+                    jsonDt = JSON.stringify({
+                        browse: 1,
+                        include:{
+                            items: {
+                                categories: true
+                            }
+                        },
+                        orderBy : {
+                            tgl_pinjam: 'desc'
+                        }})
+                }
+                      
             }
             const res = await fetch(`${server}/api/peminjaman`, {
                 headers:{
@@ -163,6 +195,7 @@ export default function Kembali(props){
         }
         fetchData();
            
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     } , [state.mode, state.paginationModel.page, state.paginationModel.pageSize, state.searchVal]);
 
    
@@ -173,7 +206,6 @@ export default function Kembali(props){
             onDone={write}
             paginationModel={state.paginationModel}
             searchVal={(value) => dispatch({'type': 'SET_SEARCH', searchVal: value})}
-            rowCount={state.rowLength}
             loading={state.loading}
             setPaginationModel={(env) => dispatch({type: 'SET_PAGINATION', page: env.page})} />)
 

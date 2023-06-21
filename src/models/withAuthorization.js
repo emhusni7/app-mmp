@@ -36,12 +36,6 @@ export const withAuth = (Component) => {
                     router.push('/login');
                 } else {
                     const userData = JSON.parse(users);    
-                    userData.menu.map((x) => {
-                        if (x.name == router.pathname.replace('/',"")){
-                           x = true;
-                           return x
-                       }
-                    })
                     setData(userData);
                 }  
             };

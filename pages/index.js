@@ -1,218 +1,212 @@
-import { unstable_debounce as debounce } from '@mui/utils';
-import { DataGrid } from '@mui/x-data-grid';
-import React from 'react';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import InputBase from '@mui/material/InputBase';
-import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Grid from '@mui/material/Grid';
-const server = process.env.NEXT_PUBLIC_URL
-import SearchIcon from '@mui/icons-material/Search';
-import DeleteIcon from '@mui/icons-material/Delete';
-import Edit from '@mui/icons-material/Edit';
-import LinearProgress from '@mui/material/LinearProgress';
-import DoneAllTwoToneIcon from '@mui/icons-material/DoneAllTwoTone';
-import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
-import BackspaceTwoToneIcon from '@mui/icons-material/BackspaceTwoTone';
+import React, { useReducer, useEffect, useCallback } from 'react';
+import {KGrid, KForm} from '../component/kembali';
 import dayjs from 'dayjs';
-import Chip from '@mui/material/Chip';
-import Box from '@mui/material/Box';
-const DATASET_OPTION = {
-  dataSet: 'Employee',
-  rowLength: 10000,
-};
+import { useAppContext } from '../src/models/withAuthorization';
+const server = process.env.NEXT_PUBLIC_URL;
 
 
+const initialState = {
+    mode: 'view',
+    items: [],
+    rowLength: undefined,
+    paginationModel: {page: 0, pageSize: 25},
+    searchVal: null,
+    loading: false    
+}
 
-const emptyObject = {};
-
-const columns = [
-    { field: 'userid', headerName: 'User ID', width: 90 },
-    {
-      field: 'username',
-      headerName: 'User Name',
-      width: 180,
-      sortable: false,
-    },
-    {
-      field: 'items',
-      headerName: 'Item Name',
-      width: 150,
-      sortable: false,
-    },
-    {
-      field: 'description',
-      headerName: 'Desc',
-      sortable: false,
-      width: 210,
-    },
-    {
-      field: 'tgl_pinjam',
-      headerName: 'Pinjam',
-      sortable: false,
-      width: 160,
-      renderCell: (index) =>{
-        return (dayjs(index.row.tgl_pinjam).format("DD-MM-YYYY HH:mm"))
-      }
-    },
-    {
-      field: 'tgl_kembali',
-      headerName: 'Kembali',
-      sortable: false,
-      width: 160,
-      renderCell: (index) =>{
-        return (index.row.tgl_kembali !== null ? dayjs(index.row.tgl_kembali).format("DD-MM-YYYY HH:mm"): "")
-      }
-      
-    },
-    {
-      field: 'state',
-      headerName: 'Status',
-      sortable: false,
-      width: 160,
-      renderCell: (index) =>{
-        return (<Chip label={index.row.state} color={index.row.state === 'Pinjam'? "primary": index.row.state === "Done"? "success": "error"} variant="outlined" />)
-      }
-      
-    },
-    {field: 'id',headerName: 'Action', headerAlign: "center", align: 'center' , width: 70, renderCell: (index) => {
-      return (
-        <Grid container justifyContent={'center'}>
-          <Grid item >
-            {
-              index.row.tgl_kembali === null ? ( <>
-              <IconButton label="Done" name="Done" color="primary" onClick={() => props.onDone(index.row.id, index.api.getSortedRowIds().indexOf(index.row.id))}>
-              <DoneAllTwoToneIcon /> 
-            </IconButton>
-            
-            <IconButton label="Hilang" name="Hilang" color="error" onClick={() => props.unlink(index.row.id, index.api.getSortedRowIds().indexOf(index.row.id))}>
-              <BackspaceTwoToneIcon /> 
-            </IconButton>
-            </>): ""
-            }
-           
-            </Grid>
-        </Grid>
-            );
-    } 
-  },
- 
-  ];
-
-export default function LazyLoadingGrid(props) {
-  // dataServerSide simulates your database.
-  
-
-
-  const [initialRows, setInitialRows] = React.useState(props.items);
-  const [rowCount, setRowCount] = React.useState(0);
-
-  const fetchRow = 1;
-  //   const fetchRow = React.useCallback(
-//     async (params) => {
-//       const serverRows = await loadServerRows(
-//         rowsServerSide,
-//         {
-//           filterModel: params.filterModel,
-//           sortModel: params.sortModel,
-//         },
-//         {
-//           minDelay: 300,
-//           maxDelay: 800,
-//           useCursorPagination: false,
-//         },
-//         columnsWithDefaultColDef,
-//       );
-
-//       return {
-//         slice: serverRows.returnedRows.slice(
-//           params.firstRowToRender,
-//           params.lastRowToRender,
-//         ),
-//         total: serverRows.returnedRows.length,
-//       };
-//     },
-//     [rowsServerSide],
-//   );
-
-  // The initial fetch request of the viewport.
-//   React.useEffect(() => {
-//     if (rowsServerSide.length === 0) {
-//       return;
-//     }
-
-//     (async () => {
-//       const { slice, total } = await fetchRow({
-//         firstRowToRender: 0,
-//         lastRowToRender: 10,
-//         sortModel: [],
-//         filterModel: {
-//           items: [],
-//         },
-//       });
-
-//       setInitialRows(slice);
-//       setRowCount(total);
-//     })();
-//   }, [rowsServerSide, fetchRow]);
-
-  // Fetch rows as they become visible in the viewport
-  const handleFetchRows = React.useCallback(
-    async (params) => {
-      const { slice, total } = await fetchRow(params);
-
-      setRowCount(total);
-    },
-    [fetchRow],
-  );
-
-  //handleFetchRows
-  const debouncedHandleFetchRows = React.useMemo(
-    () => debounce(console.log("handleFetchRowsTes"), 200),
-    [handleFetchRows],
-  );
-
- // handleFetchRows
-
-  return (
-    <Box sx={{ height: 108 + (35 * 20) + 'px'} }>
-      <DataGrid
-        rows={initialRows}
-        columns={columns}
-        hideFooterPagination
-        rowHeight={35}
-        rowCount={rowCount}
-        sortingMode="server"
-        filterMode="server"
-        rowsLoadingMode="server"
-        
-        onFetchRows={debouncedHandleFetchRows}
-        experimentalFeatures={{
-          lazyLoading: true,
-        }}
-      /> </Box>)
-      }
-
-export async function getServerSideProps(context) {
-    const res = await fetch(`${server}/api/peminjaman`, {
-        headers:{
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: 'POST',
-        body: JSON.stringify({
-            browse: 1,
-            orderBy : {
-                tgl_pinjam: 'desc'
-            }}) 
-    })
-    const result = await res.json();
-    const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
-    return {
-        props: {
-            items: dtres
+const reducer = (state, action) => {
+    switch (action.type) {
+      case 'ITEMS_REQUESTED':
+        return {...state, items:action.items, rowLength: action.rowLength}
+      case 'ITEMS_DELETED':
+        const arr = [...action.items]
+        if (action.idx !== -1) {
+            arr.splice(action.idx,1)
         }
+        return {...state, items: arr}
+      case 'ITEMS_EDIT':
+        return {...state, mode: 'edit', data: action.data}
+      case 'SET_FORM': 
+        return {...state, data: {userid: action.id, username: action.name, rfid: action.rfid, qty: 1, state: 'Pinjam', tgl_pinjam: new Date()}}
+      case 'CHANGE_MODE':
+        return {...state, mode: action.mode}
+      case 'SET_PAGINATION':
+        return {...state, paginationModel: {...state.paginationModel, page: action.page}}
+      case 'SET_SEARCH':
+        return {...state, searchVal: action.searchVal}
+      case 'SET_LOADING':
+        return {...state, loading: action.loading}
+      default:
+        return state;
     }
+  } 
+
+export default function Kembali(props){
+    const [state, dispatch] = useReducer(reducer, initialState)
+    const { user } = useAppContext();
+    // Browse Item
+    const browseItem = async () => {
+        const res = await fetch(`${server}/api/item?browse=1`)
+        const result = await res.json()
+        const dtres = result.map((x) => { return {value: x.id, title: x.item_name, description: x.description}})
+        return dtres
+    }
+
+    // create
+    const create = async (values) => {
+        props.createProgress(true);
+        const res = await fetch('/api/peminjaman',{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify(values)
+        })
+        
+        props.createProgress(false);
+        if (res.status === 200) {
+            dispatch({'type': 'CHANGE_MODE', mode: 'view'})
+            props.createNotif("success", "Data Has Been Saved")
+        } else {
+            const err = await res.json();
+            props.createNotif("error", err.message);
+            return err
+        }
+        return res
+        
+    }
+    // unlink
+    const unlink = useCallback(async (id, index) => {
+        
+        const res = await fetch('/api/peminjaman',{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify({
+                id: id,
+                tgl_kembali:new Date().toISOString(),
+                state: 'Lost',
+                stUniq: 0,
+            })
+        })
+        
+        if (res.status === 200) {
+            const temp  = [...state.items];
+            const dt = temp[index];
+            temp[index] = {...dt, tgl_kembali: new Date().toISOString(), state: 'Lost'}
+            dispatch({type: 'ITEMS_REQUESTED', items: temp})
+            props.createNotif("success", "Data Has Been Saved")
+        } else {
+            props.createNotif("Error", "Error")
+        }
+        return res
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props, state.items])
+
+    // update
+    const write = useCallback(async (id, index) => {
+        
+        const res = await fetch('/api/peminjaman',{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'PUT',
+            body: JSON.stringify({
+                id: id,
+                tgl_kembali:new Date().toISOString(),
+                state: 'Done',
+                stUniq: 0,
+            })
+        })
+        
+        if (res.status === 200) {
+            const temp  = [...state.items];
+            const dt = temp[index];
+            temp[index] = {...dt, tgl_kembali: new Date().toISOString(), state: 'Done'}
+            dispatch({type: 'ITEMS_REQUESTED', items: temp})
+            props.createNotif("success", "Data Has Been Saved")
+        } else {
+            props.createNotif("Error", "Error")
+        }
+        return res
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props, state.items])
+
+    useEffect(() => {
+        let jsonDt;
+        
+        const usrCateg = user.categories.map((x) => x.categoryid);
+        
+        async function fetchData(){
+            dispatch({type: 'SET_LOADING', loading: true})
+
+            if (!!state.searchVal){
+                jsonDt = state.searchVal;       
+            } else {
+                if (usrCateg.length > 0){
+                    jsonDt = JSON.stringify({
+                        where: {
+                            items: {
+                                categories: {id: {in: usrCateg}  
+                                }
+                            }
+                        },
+                        browse: 1,
+                        include:{
+                            items: {
+                                categories: {
+                                    id: {in: usrCateg }
+                                }
+                            }
+                        },
+                        orderBy : {
+                            tgl_pinjam: 'desc'
+                        }})
+                } else {
+                    jsonDt = JSON.stringify({
+                        browse: 1,
+                        include:{
+                            items: {
+                                categories: true
+                            }
+                        },
+                        orderBy : {
+                            tgl_pinjam: 'desc'
+                        }})
+                }
+                      
+            }
+            const res = await fetch(`${server}/api/peminjaman`, {
+                headers:{
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: jsonDt
+            })
+            const result = await res.json()
+            const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
+            dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
+            dispatch({type: 'SET_LOADING', loading: false})
+        }
+        fetchData();
+           
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } , [state.mode, state.paginationModel.page, state.paginationModel.pageSize, state.searchVal]);
+
+   
+        return (<KGrid
+            rows={state.items} 
+            unlink={unlink}
+            setForm={(id, name, rfid) => dispatch({'type':'SET_FORM', id, name, rfid})}
+            onDone={write}
+            paginationModel={state.paginationModel}
+            searchVal={(value) => dispatch({'type': 'SET_SEARCH', searchVal: value})}
+            loading={state.loading}
+            setPaginationModel={(env) => dispatch({type: 'SET_PAGINATION', page: env.page})} />)
+
 }
