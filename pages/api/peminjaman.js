@@ -46,7 +46,7 @@ const create = async (value) => {
 }
 
 const browse =async (where , skip , take, orderBy) => {
-
+    console.log(where);
     const [data, count] = await prisma.$transaction([
         prisma.transaction.findMany({skip: skip, take: take, where: where, orderBy: orderBy, include:{
                 items: {
@@ -58,6 +58,7 @@ const browse =async (where , skip , take, orderBy) => {
         }),
         prisma.transaction.count({where})
     ])
+    
     return {
         pagination: { total: count},
         data: data

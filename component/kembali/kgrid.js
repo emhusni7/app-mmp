@@ -157,9 +157,7 @@ export default function KGrid(props) {
             id: {in: user.categories.map((x) => x.categoryid)}
           }
         }
-    },
-      skip: 0,
-      take: 20,
+    }
     }
   }
 
@@ -207,6 +205,7 @@ export default function KGrid(props) {
                 disableRowSelectionOnClick
                 disableColumnMenu
                 rowHeight={35}
+                rowCount={props.rowCount}
                 rows={props.rows}
                 columns={columns}
                 pageSizeOptions={[20]}

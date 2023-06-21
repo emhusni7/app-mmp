@@ -17,9 +17,15 @@ import DoneAllTwoToneIcon from '@mui/icons-material/DoneAllTwoTone';
 import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';
 import BackspaceTwoToneIcon from '@mui/icons-material/BackspaceTwoTone';
 import DirectionsIcon from '@mui/icons-material/Directions';
+import ClearIcon from '@mui/icons-material/Clear';
+import Typography from '@mui/material/Typography';
+import { Toolbar } from "@mui/material";
+import { LocalizationProvider, DesktopDateTimePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import Autocomplete from '@mui/material/Autocomplete';
 import dayjs from 'dayjs';
 import Chip from '@mui/material/Chip';
-import {useState} from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useAppContext } from '../../src/models/withAuthorization';
 
 function CustomizedInputBase(props){
@@ -47,6 +53,55 @@ function CustomizedInputBase(props){
         <DirectionsIcon />
         </IconButton>
       </Paper>)
+}
+
+
+function QuickSearchToolbar(props) {
+  // const classes = useStyles();
+
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <Toolbar variant="dense" disableGutters>
+        <Grid container>
+          <Grid item sx={{ml: 2}}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold'}} color='primary' component="h3">
+              History
+            </Typography>
+          </Grid>
+        </Grid>
+        <Grid container justifyContent="flex-end">
+          <Grid sx={{ mr: 2}}  item xs={12}>
+            <TextField 
+              variant="standard"
+              value={props.value}
+              fullWidth
+              onChange={props.onChange}
+              
+              placeholder="Search…"
+              // className={classes.textField}
+              InputProps={{
+                
+                endAdornment: (<>
+                
+                  <IconButton
+                    title="Clear"
+                    aria-label="Clear"
+                    size="small"
+                    style={{ visibility: props.value ? 'visible' : 'hidden' }}
+                    onClick={props.clearSearch}
+                  >
+                    <ClearIcon fontSize="small" />
+                  </IconButton>
+                  <SearchIcon fontSize="small" />
+                  </>
+                ),
+              }}
+            />
+            </Grid>  
+          </Grid>
+      </Toolbar>
+    </Box>
+  );
 }
 
 
@@ -127,61 +182,68 @@ export default function KGrid(props) {
  
   ];
 
-  const [value, setValue] = useState("");
   const { user} = useAppContext();
-  
-  const changeRFID = (e) => {
-    setValue(e.target.value)
-  };
+  const [form, setForm] = useState({
+    date_f: null,
+    date_t: null,
+    state: [],
+  })
 
   const getStr = () => {
-    return {
+    var obj = {
       browse: 1,
       where: {
-        OR: [
-          {
-            userid: {
-              contains:value
-            }
-          },
-          {
-            rfid: {
-              contains: value
-            }
-          }
-      ],
-        tgl_kembali: undefined,
-        stUniq: 1,
         items: {
           categories: {
             id: {in: user.categories.map((x) => x.categoryid)}
           }
         }
     },
-      skip: 0,
-      take: 20,
-    }
-  }
-
-  const onKeyDown = (e) => {
-    
-    if (e.key === "Enter"){
-      if (!value){
-        props.searchVal("");  
-      } else {
-        let str = getStr();
-        props.searchVal(JSON.stringify(str));
-        
-      }
       
     }
+    
+    if(!!form.date_f) {
+      obj.where.tgl_pinjam = {
+        gte: form.date_f
+      } 
+    }
+
+    if (!!form.date_t) {
+      obj.where.tgl_pinjam = {
+        gte: form.date_f,
+        lte: form.date_t
+      }
+    }
+
+    if(form.state.length > 0){
+      obj.where.state = {in: form.state}
+    }
+    console.log(obj);
+    return obj
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }
+
+  const onFilterChange = useCallback((filterModel) => {
+    // Here you save the data you need from the filter model
+    console.log(filterModel);
+  }, []);
+
+
+  const onKeyDown = useCallback(() => {
+    let str = getStr();
+     props.searchVal(JSON.stringify(str));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[form.date_f, form.date_t, form.state, onClear])
+
+  const onClear = (e) => {
+    setForm({date_f: null, date_t: null, state: []});
   }
 
   
   return (
     <Grid container spacing={2}>
         <Grid item xs={12} md={12} lg={12}>
-            <CustomizedInputBase value={value} onChange={(e) => changeRFID(e)} onEnter={(e) => onKeyDown(e)}  />
+            
             <Paper
                 sx={{
                 p: 2,
@@ -191,33 +253,102 @@ export default function KGrid(props) {
                 }}
             >
             <Box sx={{ height: 108 + (35 * 20) + 'px'} }>
-            <DataGrid
-                slots={{
-                  
-                    toolbar: GridToolbar,
-                }}
-                loading={props.loading}
-                sx={{
-                  '.MuiDataGrid-main > div:nth-child(2)': {
-                    overflowY: 'auto !important',
-                    flex: 'unset !important',
-                  },
-                }}
-                autoHeight={true}
-                disableSelectionOnClick
-                disableRowSelectionOnClick
-                disableColumnMenu
-                rowHeight={35}
-                rows={props.rows}
-                columns={columns}
-                pageSizeOptions={[20]}
-                filterMode="server"
-                onFilterModelChange={onFilterChange}
-                paginationMode="server"
-                paginationModel={props.paginationModel}
-                onPaginationModelChange={props.setPaginationModel}
-                experimentalFeatures={{ newEditingApi: true }}
-                />
+              <Grid container> 
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <Grid item xs={3}>
+                    <DesktopDateTimePicker
+                          id="tgl_pinjam"
+                          variant="outlined"
+                          ampm={false}
+                          name="tgl_pinjam"
+                          label="Date From"
+                          inputFormat="DD/MM/YYYY hh:mm"
+                          required
+                          fullWidth
+                          value={form.date_f}
+                          onChange={(val) => {
+                            setForm({...form, date_f: val})
+                          }}
+                          renderInput={(params) =>
+                              <TextField {...params}
+                              size="small"
+                              id="tgl_pinjam"
+                              name="tgl_pinjam"
+                              style={{ width: '100%'}}
+                              />}/>
+                  </Grid>
+                  <Grid item sx={{ml: 2}} xs={3}>
+                    <DesktopDateTimePicker
+                          id="tgl_kembali"
+                          variant="standard"
+                          name="tgl_kembali"
+                          label="Date To"
+                          inputFormat="DD/MM/YYYY HH:mm"
+                          required
+                          ampm={false}
+                          fullWidth
+                          value={form.date_t}
+                          onChange={(val) => {
+                            setForm({...form, date_t: val})
+                          }}
+                          renderInput={(params) =>
+                              <TextField {...params}
+                              size="small"
+                              id="tgl_kembali"
+                              name="tgl_kembali"
+                              style={{ width: '100%'}}
+                              />}/>
+                  </Grid>
+                  <Grid item sx={{ml: 2}} xs={3}>
+                      <Autocomplete
+                        multiple={true}
+                        id="state"
+                        fullWidth
+                        size="small"
+                        defaultValue={form.state}
+                        name="state"
+                        getOptionLabel={(option) => option }
+                        options={['Pinjam','Done','Lost']}
+                        onChange={(e, value) => setForm({...form, state: value})}
+                        renderInput={(params) => <TextField {...params}  label="State" />}
+                    />
+                </Grid>
+                <Grid item sx={{ml: 2}} xs={1}>
+                      <Button onClick={onKeyDown} variant="outlined">Search</Button>      
+                  </Grid>
+                  <Grid item sx={{ml: 2}} xs={1}>
+                      <Button onClick={(e) => onClear(e)} color='error'>Clear</Button>      
+                  </Grid>
+                </LocalizationProvider>
+              </Grid>
+              <br/>
+              <DataGrid
+                  slots={{
+                    toolbar: QuickSearchToolbar
+                  }}
+                  loading={props.loading}
+                  sx={{
+                    '.MuiDataGrid-main > div:nth-child(2)': {
+                      overflowY: 'auto !important',
+                      flex: 'unset !important',
+                    },
+                  }}
+                  autoHeight={true}
+                  disableSelectionOnClick
+                  disableRowSelectionOnClick
+                  disableColumnMenu
+                  rowHeight={35}
+                  rowCount={props.rowLength}
+                  rows={props.rows}
+                  columns={columns}
+                  pageSizeOptions={[20]}
+                  // filterMode="server"
+                  // onFilterModelChange={onFilterChange}
+                  paginationMode="server"
+                  paginationModel={props.paginationModel}
+                  onPaginationModelChange={props.setPaginationModel}
+                  experimentalFeatures={{ newEditingApi: true }}
+                  />
             </Box>
         </Paper>
         </Grid>

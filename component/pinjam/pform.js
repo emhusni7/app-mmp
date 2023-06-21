@@ -152,6 +152,7 @@ export default function FPinjam(props){
                                     variant="standard"
                                     name="tgl_pinjam"
                                     label="Date From"
+                                    ampm={false}
                                     inputFormat="DD/MM/YYYY HH:mm"
                                     required
                                     fullWidth

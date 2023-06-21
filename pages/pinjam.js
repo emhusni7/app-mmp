@@ -164,6 +164,7 @@ export default function Pinjam(props){
             fetchData(state.paginationModel.page, state.paginationModel.pageSize);
         }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[state.paginationModel.page, state.paginationModel.pageSize, state.mode])
     
     
@@ -173,6 +174,7 @@ export default function Pinjam(props){
             unlink={unlink}
             setForm={(id, name, rfid) => dispatch({'type':'SET_FORM', id, name, rfid})}
             changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
+            rowLength={state.rowLength}
             onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt})}
             paginationModel={state.paginationModel}
             createNotif={props.createNotif}

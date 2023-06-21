@@ -141,11 +141,14 @@ export default function Kembali(props){
         
         const usrCateg = user.categories.map((x) => x.categoryid);
         
-        async function fetchData(){
+        async function fetchData(page, limit){
             dispatch({type: 'SET_LOADING', loading: true})
-
+            const skip = page * limit;
             if (!!state.searchVal){
-                jsonDt = state.searchVal;       
+                const dtJson = JSON.parse(state.searchVal)
+                dtJson.take = limit;
+                dtJson.skip = skip;
+                jsonDt = JSON.stringify(dtJson);   
             } else {
                 if (usrCateg.length > 0){
                     jsonDt = JSON.stringify({
@@ -163,6 +166,8 @@ export default function Kembali(props){
                                 }
                             }
                         },
+                        skip: skip,
+                        take: limit,
                         orderBy : {
                             tgl_pinjam: 'desc'
                         }})
@@ -174,6 +179,8 @@ export default function Kembali(props){
                                 categories: true
                             }
                         },
+                        skip: skip,
+                        take: limit,
                         orderBy : {
                             tgl_pinjam: 'desc'
                         }})
@@ -193,7 +200,7 @@ export default function Kembali(props){
             dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
             dispatch({type: 'SET_LOADING', loading: false})
         }
-        fetchData();
+        fetchData(state.paginationModel.page, state.paginationModel.pageSize);
            
     // eslint-disable-next-line react-hooks/exhaustive-deps
     } , [state.mode, state.paginationModel.page, state.paginationModel.pageSize, state.searchVal]);
@@ -204,6 +211,7 @@ export default function Kembali(props){
             unlink={unlink}
             setForm={(id, name, rfid) => dispatch({'type':'SET_FORM', id, name, rfid})}
             onDone={write}
+            rowLength={state.rowLength}
             paginationModel={state.paginationModel}
             searchVal={(value) => dispatch({'type': 'SET_SEARCH', searchVal: value})}
             loading={state.loading}

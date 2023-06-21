@@ -111,8 +111,8 @@ export default function IForm(props){
                 <br></br>
                 <Button  variant="contained" type="submit">Simpan</Button>
                 <Button sx={{pl:4}} onClick={props.onClose} color="error">
-                        Cancel
-                </Button> 
+                    Cancel
+                </Button>
              </Grid>
             
         </Grid></form>)}</Formik>
