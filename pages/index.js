@@ -199,7 +199,7 @@ export default function Kembali(props){
     } , [state.mode, state.paginationModel.page, state.paginationModel.pageSize, state.searchVal]);
 
    
-        return (<KGrid
+        return (<KForm
             rows={state.items} 
             unlink={unlink}
             setForm={(id, name, rfid) => dispatch({'type':'SET_FORM', id, name, rfid})}

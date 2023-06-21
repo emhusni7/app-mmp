@@ -181,7 +181,7 @@ export default function PGrid(props) {
                 
                 rows={props.rows}
                 columns={columns}
-                pageSizeOptions={[25]}
+                pageSizeOptions={[20]}
                 paginationMode="server"
                 paginationModel={props.paginationModel}
                 onPaginationModelChange={props.setPaginationModel}
