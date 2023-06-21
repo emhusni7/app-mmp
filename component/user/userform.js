@@ -106,12 +106,12 @@ export default function UForm(props){
                     name="menu"
                     getOptionLabel={(option) => `${option.parent} - ${option.title}` }
                     options={[
-                        {path: '/user', title: 'User', parent: 'Master', icon: ''},
-                        {path: '/category', title: 'Category', parent: 'Master', icon: ''},
-                        {path: '/item', title: 'Item', parent: 'Master', icon: ''},
-                        {path: '/pinjam', title: 'Pinjam', parent: 'Transaksi', icon: ''},
-                        {path: '/kembali', title: 'Kembali', parent: 'Transaksi', icon: ''},
-                        {path: '/upload', title: 'Sync', parent: 'Transaksi', icon: ''},
+                        {path: '/user', title: 'User', parent: 'Master', icon: 'user.png'},
+                        {path: '/category', title: 'Category', parent: 'Master', icon: 'category.png'},
+                        {path: '/item', title: 'Item', parent: 'Master', icon: 'item.png'},
+                        {path: '/pinjam', title: 'Pinjam', parent: 'Transaksi', icon: 'pinjam.png'},
+                        {path: '/kembali', title: 'Kembali', parent: 'Transaksi', icon: 'kembali.png'},
+                        {path: '/upload', title: 'Sync', parent: 'Transaksi', icon: 'sync.png'},
                     ]}
                     onChange={(e, value) => setFieldValue("menu",value)}
                     renderInput={(params) => <TextField {...params} error={true} variant="standard" label="Menu" />}

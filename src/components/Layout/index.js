@@ -40,6 +40,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 // import { styled, alpha } from '@mui/material/styles';
 import { deleteCookie, getCookie } from "cookies-next";
 import { withAuth } from "../../models/withAuthorization";
+import Image from 'next/image';
 
 
 function Copyright(props) {
@@ -294,11 +295,12 @@ const CustomBar = (props) => {
                 <ExpandMore />
               </ListItemButton>
               { user.menu.map((x) => {
+                
                   if (x.parent === 'Master'){
                     return (<List key={x.title} component="div" disablePadding>
                       <ListItemButton href={x.path} sx={{ pl: 3 }}>
                         <ListItemIcon>
-                          <StarBorder />
+                          <Image src={`/static/${x.icon}`} width={30} height={30} alt={x.title}  />
                         </ListItemIcon>
                         <ListItemText primary={x.title} />
                       </ListItemButton>
@@ -317,7 +319,7 @@ const CustomBar = (props) => {
                     return (<List key={x.title} component="div" disablePadding>
                       <ListItemButton href={x.path} sx={{ pl: 3 }}>
                         <ListItemIcon>
-                          <StarBorder />
+                        <Image src={`/static/${x.icon}`} width={30} height={30} alt={x.title}  />
                         </ListItemIcon>
                         <ListItemText primary={x.title} />
                       </ListItemButton>

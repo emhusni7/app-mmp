@@ -12,11 +12,34 @@
             "src": "/favicon.ico",
             "sizes": "226x227"
         },
-        
         {
             "src": "/static/mmp.jpeg",
             "sizes": "1500x1004",
             "type": "image/jpeg"
-        }
-            ]
+        },
+        {
+            "src": "/static/user.png",
+            "sizes": "255x255",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/sync.png",
+            "sizes": "255x255",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/pinjam.png",
+            "sizes": "255x255",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/kembali.png",
+            "sizes": "255x255",
+            "type": "image/png"
+        },
+        {
+            "src": "/static/item.png",
+            "sizes": "301x167",
+            "type": "image/png"
+        }]
   }
