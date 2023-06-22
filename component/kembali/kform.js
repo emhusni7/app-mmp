@@ -25,35 +25,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Autocomplete from '@mui/material/Autocomplete';
 import dayjs from 'dayjs';
 import Chip from '@mui/material/Chip';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect} from 'react';
 import { useAppContext } from '../../src/models/withAuthorization';
+import debounce from 'lodash.debounce';
 
-function CustomizedInputBase(props){
-
-  return (
-    <Paper
-        sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%', mb:'10px' }}
-      > 
-       <IconButton sx={{ p: '10px' }} aria-label="menu">
-          {/* <MenuIcon /> */}
-        </IconButton>
-        <InputBase
-            sx={{ ml: 1, flex: 1 }}
-            placeholder="Search RFID / No. ID"
-            inputProps={{ 'aria-label': 'search rfid' }}
-            value={props.value}
-            onChange={props.onChange}
-            onKeyDown={props.onEnter}
-        />
-        <IconButton onClick={props.onEnter} type="button" sx={{ p: '10px' }} aria-label="search">
-        <SearchIcon />
-        </IconButton>
-        <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
-        <IconButton  color="primary" sx={{ p: '10px' }} aria-label="directions">
-        <DirectionsIcon />
-        </IconButton>
-      </Paper>)
-}
 
 
 function QuickSearchToolbar(props) {
@@ -73,10 +48,8 @@ function QuickSearchToolbar(props) {
           <Grid sx={{ mr: 2}}  item xs={12}>
             <TextField 
               variant="standard"
-              value={props.value}
               fullWidth
-              onChange={props.onChange}
-              
+              onChange={(e) => props.handleChange(e)}
               placeholder="Search…"
               // className={classes.textField}
               InputProps={{
@@ -187,9 +160,11 @@ export default function KGrid(props) {
     date_f: null,
     date_t: null,
     state: [],
+    searchText: "",
   })
 
-  const getStr = () => {
+
+  const getStr = (date_f, date_t, state, searchText) => {
     var obj = {
       browse: 1,
       where: {
@@ -202,48 +177,74 @@ export default function KGrid(props) {
       
     }
     
-    if(!!form.date_f) {
-      obj.where.tgl_pinjam = {
-        gte: form.date_f
-      } 
+    if(!!date_f) {
+      obj.where = {...obj.where,
+        tgl_pinjam:{
+          gte: date_f !== null ? date_f : undefined 
+        } 
+      }
+    } 
+
+    if (!!date_t) {
+      obj.where.tgl_pinjam = {...obj.where.tgl_pinjam ,lte: date_t !== null ? date_t : undefined}
     }
 
-    if (!!form.date_t) {
-      obj.where.tgl_pinjam = {
-        gte: form.date_f,
-        lte: form.date_t
+    if(state.length > 0){
+      obj.where = {...obj.where,
+        state: {in: state}
+      }
+     }
+    if (!!searchText){
+      obj.where = {...obj.where,
+        OR: [
+          {userid: {contains: searchText}},
+          {username: {contains: searchText}},
+        ]
       }
     }
 
-    if(form.state.length > 0){
-      obj.where.state = {in: form.state}
-    }
-    console.log(obj);
     return obj
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }
 
-  const onFilterChange = useCallback((filterModel) => {
+  const onFilterChange = (e) => {
     // Here you save the data you need from the filter model
-    console.log(filterModel);
-  }, []);
-
-
-  const onKeyDown = useCallback(() => {
-    let str = getStr();
-     props.searchVal(JSON.stringify(str));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[form.date_f, form.date_t, form.state, onClear])
-
-  const onClear = (e) => {
-    setForm({date_f: null, date_t: null, state: []});
+    setForm((prev) => {
+      const str = getStr(form.date_f, form.date_t, form.state, e.target.value);  
+      props.searchVal(JSON.stringify(str));
+      return {...prev, searchText: e.target.value}
+    })
   }
 
+ // eslint-disable-next-line react-hooks/exhaustive-deps
+ const debSearch = useCallback(
+    debounce(onFilterChange, 400)
+  , [props.searchText]);
+
+  const onKeyDown = (e) => {
+    const str = getStr(form.date_f, form.date_t, form.state, form.searchText);
+    props.searchVal(JSON.stringify(str));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }
+ 
+  
+  // client usage, given some state dep
+  
+  const OnClear = useCallback(() => {
+      setForm({ date_f: null, date_t: null, state: []})
+      setForm((prev) => {
+        const str = getStr(prev.date_f, prev.date_t, prev.state, prev.searchText);
+        props.searchVal(JSON.stringify(str));
+        return prev
+      })
+      
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[props])
+  
   
   return (
     <Grid container spacing={2}>
         <Grid item xs={12} md={12} lg={12}>
-            
             <Paper
                 sx={{
                 p: 2,
@@ -262,7 +263,7 @@ export default function KGrid(props) {
                           ampm={false}
                           name="tgl_pinjam"
                           label="Date From"
-                          inputFormat="DD/MM/YYYY hh:mm"
+                          inputFormat="DD/MM/YYYY HH:mm"
                           required
                           fullWidth
                           value={form.date_f}
@@ -305,7 +306,7 @@ export default function KGrid(props) {
                         id="state"
                         fullWidth
                         size="small"
-                        defaultValue={form.state}
+                        value={form.state}
                         name="state"
                         getOptionLabel={(option) => option }
                         options={['Pinjam','Done','Lost']}
@@ -314,10 +315,10 @@ export default function KGrid(props) {
                     />
                 </Grid>
                 <Grid item sx={{ml: 2}} xs={1}>
-                      <Button onClick={onKeyDown} variant="outlined">Search</Button>      
+                      <Button onClick={(e) => onKeyDown(e)} variant="outlined">Search</Button>      
                   </Grid>
                   <Grid item sx={{ml: 2}} xs={1}>
-                      <Button onClick={(e) => onClear(e)} color='error'>Clear</Button>      
+                      <Button onClick={OnClear} color='error'>Clear</Button>      
                   </Grid>
                 </LocalizationProvider>
               </Grid>
@@ -325,6 +326,10 @@ export default function KGrid(props) {
               <DataGrid
                   slots={{
                     toolbar: QuickSearchToolbar
+                    }
+                  }
+                  slotProps={{
+                    toolbar: { handleChange: debSearch}
                   }}
                   loading={props.loading}
                   sx={{
