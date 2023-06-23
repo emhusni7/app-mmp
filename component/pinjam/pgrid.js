@@ -14,6 +14,8 @@ import DirectionsIcon from '@mui/icons-material/Directions';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import LinearProgress from '@mui/material/LinearProgress';
+import { Toolbar } from "@mui/material";
+import Typography from '@mui/material/Typography';
 
 import dayjs from 'dayjs';
 
@@ -137,6 +139,19 @@ export default function PGrid(props) {
     }
   }
 
+  function ToolbarFunc(){
+    return (<Box sx={{ flexGrow: 1 }}>
+      <Toolbar variant="dense" disableGutters>
+        <Grid container>
+          <Grid item sx={{ml: 2}}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold'}} color='primary' component="h3">
+              Pinjam
+            </Typography>
+          </Grid>
+        </Grid>
+      </Toolbar>
+    </Box>)
+  }
   
   return (
     
@@ -159,7 +174,8 @@ export default function PGrid(props) {
             
             <DataGrid
                 slots={{
-                  loadingOverlay: LinearProgress
+                  loadingOverlay: LinearProgress,
+                  toolbar: ToolbarFunc
                 }}
                 loading={props.rows.length === 0}
                 sx={{

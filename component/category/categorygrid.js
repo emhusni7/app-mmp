@@ -7,6 +7,22 @@ import IconButton from "@mui/material/IconButton";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import LinearProgress from '@mui/material/LinearProgress';
+import Typography from '@mui/material/Typography';
+import { Toolbar } from "@mui/material";
+
+function ToolbarFunc(){
+  return (<Box sx={{ flexGrow: 1 }}>
+    <Toolbar variant="dense" disableGutters>
+      <Grid container>
+        <Grid item sx={{ml: 2}}>
+          <Typography variant="h5" sx={{ fontWeight: 'bold'}} color='primary' component="h3">
+            Category
+          </Typography>
+        </Grid>
+      </Grid>
+    </Toolbar>
+  </Box>)
+}
 
 export default function CGrid(props) {
   const columns = [
@@ -52,7 +68,7 @@ export default function CGrid(props) {
       <DataGrid
         slots={{
           loadingOverlay: LinearProgress,
-          toolbar: GridToolbar,
+          toolbar: ToolbarFunc,
           
         }}
         loading={props.rows.length === 0}

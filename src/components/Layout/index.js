@@ -288,7 +288,7 @@ const CustomBar = (props) => {
           <Divider />  
             <List component="nav">
               <ListItemButton key="MasterButton">
-                <ListItemIcon key="MasterIcon">
+                <ListItemIcon key="MasterIcon" onClick={handleClick}>
                   <InboxIcon />
                 </ListItemIcon>
                 <ListItemText key="MasterText">Master</ListItemText>
@@ -308,7 +308,7 @@ const CustomBar = (props) => {
                   }
               })}
               <ListItemButton key="TransaksiButton">
-                <ListItemIcon key="TransaksiIcon">
+                <ListItemIcon key="TransaksiIcon" onClick={handleClick}>
                   <InboxIcon />
                 </ListItemIcon>
                 <ListItemText key="TransaksiText">Transaksi</ListItemText>

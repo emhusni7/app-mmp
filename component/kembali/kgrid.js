@@ -19,6 +19,8 @@ import BackspaceTwoToneIcon from '@mui/icons-material/BackspaceTwoTone';
 import DirectionsIcon from '@mui/icons-material/Directions';
 import dayjs from 'dayjs';
 import Chip from '@mui/material/Chip';
+import { Toolbar } from "@mui/material";
+import Typography from '@mui/material/Typography';
 import {useState} from 'react';
 import { useAppContext } from '../../src/models/withAuthorization';
 
@@ -181,6 +183,19 @@ export default function KGrid(props) {
     }
   }
 
+  function ToolbarFunc(){
+    return (<Box sx={{ flexGrow: 1 }}>
+      <Toolbar variant="dense" disableGutters>
+        <Grid container>
+          <Grid item sx={{ml: 2}}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold'}} color='primary' component="h3">
+              Kembali
+            </Typography>
+          </Grid>
+        </Grid>
+      </Toolbar>
+    </Box>)
+  }
   
   return (
     <Grid container spacing={2}>
@@ -196,9 +211,9 @@ export default function KGrid(props) {
             >
             <Box sx={{ height: 108 + (35 * 20) + 'px'} }>
             <DataGrid
-                // slots={{
-                //   loadingOverlay: LinearProgress
-                // }}
+                slots={{
+                  toolbar: ToolbarFunc
+                }}
                 loading={props.loading}
                 sx={{
                   '.MuiDataGrid-main > div:nth-child(2)': {
