@@ -46,7 +46,7 @@ model Item{
   createdat DateTime @default(now()) @db.Timestamp(0)
   item_name String @db.VarChar(30)
   description String @db.Text
-  categories Category @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  categories Category @relation(fields: [category_id], references: [id])
   category_id Int
   trans_ids Transaction[]
   @@unique([item_name, category_id])
@@ -58,7 +58,7 @@ model Transaction{
   username String @db.VarChar(50)
   rfid String @db.VarChar(20)
   userid String @db.VarChar(10)
-  items Item @relation(fields: [item_id], references: [id], onDelete: Cascade)
+  items Item @relation(fields: [item_id], references: [id])
   description String? @db.Text
   item_id Int
   qty Float 

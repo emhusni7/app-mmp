@@ -50,6 +50,8 @@ function CustomizedInputBase(props){
 }
 
 
+
+
 export default function KGrid(props) {
 
 
@@ -135,7 +137,7 @@ export default function KGrid(props) {
   };
 
   const getStr = () => {
-    return {
+    var obj = {
       browse: 1,
       where: {
         OR: [
@@ -152,13 +154,17 @@ export default function KGrid(props) {
       ],
         tgl_kembali: undefined,
         stUniq: 1,
-        items: {
-          categories: {
-            id: {in: user.categories.map((x) => x.categoryid)}
-          }
+        
+    }
+    }
+    if (user.categories.length> 0){
+      obj = {...obj.where, items: {
+        categories: {
+          id: {in: user.categories.map((x) => x.categoryid)}
         }
+      }}
     }
-    }
+    return obj
   }
 
   const onKeyDown = (e) => {
