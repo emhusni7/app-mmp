@@ -15,7 +15,6 @@ export default async function middleware(req, res) {
     } 
     else {
       const menus = JSON.parse(getCookie('user', {req, res}));
-      console.log(menus);
       menus.menu.map((x) => {
         if (pathname.includes(x.path)){
           akses = true;
