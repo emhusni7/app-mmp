@@ -89,7 +89,7 @@ export default function Kembali(props){
                 id: id,
                 tgl_kembali:new Date().toISOString(),
                 state: 'Lost',
-                stUniq: 0,
+                stUniq: null,
             })
         })
         
@@ -119,7 +119,7 @@ export default function Kembali(props){
                 id: id,
                 tgl_kembali:new Date().toISOString(),
                 state: 'Done',
-                stUniq: 0,
+                stUniq: null,
             })
         })
         
