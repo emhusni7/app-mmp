@@ -21,7 +21,7 @@ export default function CForm(props){
         initialValues={initial_val}
         validationSchema={BCSchema}
         onSubmit={(values, { resetForm, setSubmitting, setFieldError, setFieldValue}) => {
-            console.log(values);
+           
             setTimeout(async() => {
                 if (mode === 'create'){
                     await props.create(values);

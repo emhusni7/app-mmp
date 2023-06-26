@@ -226,6 +226,7 @@ const CustomBar = (props) => {
           color="inherit"
           noWrap
           sx={{ flexGrow: 1 }}
+          onClick={() => router.push("/")}
         >
           Dashboard
         </Typography>
@@ -337,7 +338,7 @@ function DashboardContent({children}) {
  const {asPath} = useRouter();
  const user = getCookie('user');
   let body;
-  console.log(asPath)
+  // console.log(asPath)
   if (asPath.includes("pinjam") || asPath.includes("kembali") || asPath === '/'){
     body = children 
   } else {

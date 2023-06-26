@@ -44,7 +44,7 @@ export default function CGrid(props) {
         <Grid container justifyContent={'center'}>
           <Grid item >
             <IconButton onClick={async () => {
-              console.log(index);
+              
               props.onEdit(index.row);
             }}>
                <Edit  />

@@ -30,7 +30,7 @@ export default function UForm(props){
         validationSchema={BCSchema}
         onSubmit={(values, { resetForm, setSubmitting, setFieldError}) => {
             setTimeout(async() => {
-                console.log(values);
+                // console.log(values);
                 const newVal = values.categories.map((x) => (
                     {category:
                         {connect:

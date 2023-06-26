@@ -30,7 +30,7 @@ export default async (req, res) => {
 
 
     } catch (e) {
-        console.log(e.message)
+        // console.log(e.message)
         await prisma.$disconnect()
         return res.status(500).json({'message': e.message})
     }   
@@ -100,7 +100,7 @@ const login = async (username, password) => {
         }
     })
 
-    console.log(user);
+    // console.log(user);
 
     const result = await bcrypt.compareSync(password, user.password);
     if (result){

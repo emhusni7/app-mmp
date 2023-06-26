@@ -36,7 +36,7 @@ export const FHeader = (props) => {
 export default function FPinjam(props){
 
     const mode = props.mode;
-    console.log(mode.includes('create','edit'));
+    // console.log(mode.includes('create','edit'));
     let initial_val;
     if (mode === 'create'){
         initial_val = { ...props.data}    
