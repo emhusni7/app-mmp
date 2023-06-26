@@ -30,7 +30,7 @@ const reducer = (state, action) => {
       case 'CHANGE_MODE':
         return {...state, mode: action.mode}
       case 'SET_LOADING':
-        return {...state, mode: action.loading}
+        return {...state, loading: action.loading}
       case 'SET_PAGINATION':
         return {...state, paginationModel: {...state.paginationModel, page: action.page}}  
       default:

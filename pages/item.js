@@ -26,7 +26,7 @@ const reducer = (state, action) => {
       case 'CHANGE_MODE':
         return {...state, mode: action.mode}
         case 'SET_LOADING':
-            return {...state, mode: action.loading}
+            return {...state, loading: action.loading}
       default:
         return state;
     }
