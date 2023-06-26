@@ -38,7 +38,7 @@ export default async (req, res) => {
 
 
 const createUser = async (value) => {
-    const newpass = await bcrypt.hashSync(value.password)  
+    const newpass = await bcrypt.hashSync(value.password,5)  
     const newVal = {...values, password: newpass}
     const result = prisma.user.create({
         data: newVal
