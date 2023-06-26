@@ -89,7 +89,7 @@ export default function UGrid(props) {
           loadingOverlay: LinearProgress,
           toolbar: ToolbarFunc,
         }}
-        loading={props.rows.length === 0}
+        loading={props.loading}
         disableRowSelectionOnClick
         getRowId= {(row) => row.id}
         experimentalFeatures={{ newEditingApi: true }}

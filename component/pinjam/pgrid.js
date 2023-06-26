@@ -177,7 +177,7 @@ export default function PGrid(props) {
                   loadingOverlay: LinearProgress,
                   toolbar: ToolbarFunc
                 }}
-                loading={props.rows.length === 0}
+                loading={props.loading}
                 sx={{
                   overflow: 'auto',
                   '.MuiDataGrid-virtualScroller': {

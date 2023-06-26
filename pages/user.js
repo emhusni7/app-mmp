@@ -6,6 +6,7 @@ const server = process.env.NEXT_PUBLIC_URL
 
 const initialState = {
     mode: 'view',
+    loading: false,
     items: []
 }
 
@@ -23,6 +24,8 @@ const reducer = (state, action) => {
         return {...state, mode: 'edit', data: action.data}
       case 'CHANGE_MODE':
         return {...state, mode: action.mode}
+      case 'SET_LOADING':
+        return {...state, loading: action.loading}
       default:
         return state;
     }
@@ -103,9 +106,11 @@ export default function User(props){
     
 
     const getUser = async () => {
+        dispatch({type: 'SET_LOADING', loading: true})
         const res = await fetch(`${server}/api/user?browse=1`)
         const result = await res.json()
         const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
+        dispatch({type: 'SET_LOADING', loading: false})
         dispatch({type: 'ITEMS_REQUESTED', items: dtres})
     }
 
@@ -122,6 +127,7 @@ export default function User(props){
                     unlink={() => unlink}
                     changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
                     onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt}) }
+                    loading={state.loading}
                 />
                 )
     } else if (state.mode === "edit") {

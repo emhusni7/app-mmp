@@ -77,7 +77,7 @@ export default function UGrid(props) {
           loadingOverlay: LinearProgress,
           toolbar: ToolbarFunc,
         }}
-        loading={props.rows.length === 0}
+        loading={props.loading}
         rows={props.rows}
         columns={columns}
         pageSize={5}

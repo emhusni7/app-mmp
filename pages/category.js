@@ -8,6 +8,7 @@ const server = process.env.NEXT_PUBLIC_URL
 
 const initialState = {
     mode: 'view',
+    loading: false,
     items: []
 }
 
@@ -23,6 +24,8 @@ const reducer = (state, action) => {
         return {...state, items: arr}
       case 'ITEMS_EDIT':
         return {...state, mode: 'edit', data: action.data}
+      case 'SET_LOADING':
+            return {...state, loading: action.loading}
       case 'CHANGE_MODE':
         return {...state, mode: action.mode}
       default:
@@ -94,9 +97,11 @@ export default function Category(props){
 
 
     const browse = async () =>{
+        dispatch({type: 'SET_LOADING', loading: true})
         const res = await fetch(`${server}/api/category?browse=1`)
         const result = await res.json()
         const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
+        dispatch({type: 'SET_LOADING', loading: false})
         dispatch({type: 'ITEMS_REQUESTED', items: dtres})
     }
 
@@ -111,6 +116,7 @@ export default function Category(props){
         return (<CGrid 
             rows={state.items} 
             unlink={unlink}
+            loading={state.loading}
             changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
             onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt}) }
         />)

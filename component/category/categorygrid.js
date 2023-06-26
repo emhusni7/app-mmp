@@ -71,7 +71,7 @@ export default function CGrid(props) {
           toolbar: ToolbarFunc,
           
         }}
-        loading={props.rows.length === 0}
+        loading={props.loading}
         rows={props.rows}
         columns={columns}
         pageSize={5}

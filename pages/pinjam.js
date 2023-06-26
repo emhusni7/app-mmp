@@ -9,6 +9,7 @@ const initialState = {
     items: [],
     rowLength: undefined,
     paginationModel: {page: 0, pageSize: 25},
+    loading: false
     
 }
 
@@ -28,8 +29,10 @@ const reducer = (state, action) => {
         return {...state, data: {userid: action.id, username: action.name, rfid: action.rfid, qty: 1, state: 'Pinjam', tgl_pinjam: new Date()}}
       case 'CHANGE_MODE':
         return {...state, mode: action.mode}
+      case 'SET_LOADING':
+        return {...state, mode: action.loading}
       case 'SET_PAGINATION':
-        return {...state, paginationModel: {...state.paginationModel, page: action.page}}
+        return {...state, paginationModel: {...state.paginationModel, page: action.page}}  
       default:
         return state;
     }
@@ -144,10 +147,11 @@ export default function Pinjam(props){
                     skip: skip,
                     take: limit,
                     orderBy : {
-                        tgl_pinjam: 'desc'
+                            tgl_pinjam: 'desc'
                     }
                 } 
             }
+            dispatch({type: 'SET_LOADING', loading: true})
             const res = await fetch(`${server}/api/peminjaman`, {
                 headers:{
                     'Accept': 'application/json',
@@ -159,6 +163,7 @@ export default function Pinjam(props){
             const result = await res.json()
             const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
             dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
+            dispatch({type: 'SET_LOADING', loading: false})
         }
         if (state.mode !== 'edit'){
             fetchData(state.paginationModel.page, state.paginationModel.pageSize);
@@ -178,6 +183,7 @@ export default function Pinjam(props){
             onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt})}
             paginationModel={state.paginationModel}
             createNotif={props.createNotif}
+            loading={state.loading}
             createProgress={props.createProgress}
             setPaginationModel={(env) => dispatch({type: 'SET_PAGINATION', page: env.page})}
         />)
