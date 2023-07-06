@@ -7,7 +7,7 @@ import SyncIcon from '@mui/icons-material/Sync';
 import { PersentProgressBars, CustomizedProgressBars } from "../src/components/Layout/loader";
 import axios from "axios";
 import path from 'path';
-const sql = require('mssql');
+
 
 
 export default function UploadButtons(props) {
@@ -17,14 +17,14 @@ export default function UploadButtons(props) {
         const [progress, setProgress] = useState(0);
         const [loading, setLoading] = useState(false);
 
-        const SyncSQL = async () => {
-          try {
-            await sql.connect('Server=192.168.10.50;Database=mmp_hrms;User Id=sa;Password=p@ssw00rd;Encrypt=true');
-            const result = await sql.query`SELECT TOP 20 * FROM dbo.tb_m_Warning`;
-            console.dir(result);
-          } catch (err) {
-            console.log(err);
-          }
+        // const SyncSQL = async () => {
+        //   try {
+        //     await sql.connect('Server=192.168.10.50;Database=mmp_hrms;User Id=sa;Password=p@ssw00rd;Encrypt=true');
+        //     const result = await sql.query`SELECT TOP 20 * FROM dbo.tb_m_Warning`;
+        //     console.dir(result);
+        //   } catch (err) {
+        //     console.log(err);
+        //   }
           
 
         }
