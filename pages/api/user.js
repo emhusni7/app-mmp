@@ -104,8 +104,6 @@ const login = async (username, password) => {
         }
     })
 
-    console.log(user);
-
     const result = await bcrypt.compareSync(password, user.password);
     if (result){
         delete user['id']; 

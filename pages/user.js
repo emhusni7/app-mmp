@@ -136,7 +136,7 @@ export default function User(props){
     if (state.mode === "view"){
         return (<UGrid 
                     rows={state.items} 
-                    unlink={() => unlink}
+                    unlink={unlink}
                     changeMode={(val) => dispatch({'type': 'CHANGE_MODE', mode: val})} 
                     onEdit={(dt) => dispatch({'type': 'ITEMS_EDIT', data: dt}) }
                     loading={state.loading}
