@@ -35,7 +35,7 @@ export default async(req, res) => {
 }
 
 const getUser= async (value, productid, description) => {
-    const data = userObj.find((usr) => usr.rfid === value)
+    const data = userObj.find((usr) => usr.rfid === value || usr.id ===value)
     if(!!data){
        const res = create({
                 userid: data.id,
