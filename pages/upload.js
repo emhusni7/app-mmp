@@ -27,7 +27,7 @@ export default function UploadButtons(props) {
         //   }
           
 
-        }
+      //  }
 
         // const uploadToServer = async (event) => {
         //   setProgress(0);
