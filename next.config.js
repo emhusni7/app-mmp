@@ -1,14 +1,14 @@
 const path = require('path');
+const runtimeCaching = require("next-pwa/cache");
 const withPWA = require('next-pwa');
 
 module.exports = withPWA({
-//  reactStrictMode:true,
   pwa: {
     dest: "public",
-   // register: true,
-  //  skipWaiting: true,
-    disable: process.env.NODE_ENV === "development",
+    runtimeCaching,
+    disable: process.env.NODE_ENV === "development"
   },
+//  reactStrictMode:true,
   webpack5: true,
   webpack: (config) => {
     

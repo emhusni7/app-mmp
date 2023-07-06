@@ -19,7 +19,8 @@ export default async (req, res) => {
             return res.status(200).json(result);
         }
     } catch (e) {
-        return res.status(500).json({'message': e.message})
+        console.log(e.message);
+        return res.status(500).json({'message': e.message});
     }   
 }
 
@@ -33,18 +34,18 @@ const create = async (value) => {
 
 const browse =async (req, res) => {
     let usrJson = JSON.parse(getCookie('user', {req, res}));
-    usrJson = usrJson.categories.map((x) => x.categoryid)
+    usrJson = usrJson.categories.map((x) => x.categoryid);
     let jsonStr;
     if (usrJson.length > 0){
        jsonStr = {
-        where: {
-            id: {in: usrJson }
-        },
-        orderBy: [{createdat: 'desc'}],
+            where: {
+                id: {in: usrJson }
+            },
+            orderBy: [{createdat: 'desc'}],
         }
     } else {
         jsonStr = {
-        orderBy: [{createdat: 'desc'}],
+            orderBy: [{createdat: 'desc'}],
         }
     }
     const result = await prisma.category.findMany(jsonStr)

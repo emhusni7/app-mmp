@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Stack from "@mui/material/Stack";
 import { Container,Box, Typography, Button, ListItem, Grid, TextField, IconButton } from "@mui/material";
 import LinearProgress from "@mui/material";
@@ -7,14 +7,27 @@ import SyncIcon from '@mui/icons-material/Sync';
 import { PersentProgressBars, CustomizedProgressBars } from "../src/components/Layout/loader";
 import axios from "axios";
 import path from 'path';
+const sql = require('mssql');
 
-    export default function UploadButtons(props) {
+
+export default function UploadButtons(props) {
 
         //console.log(props.pathname);
         const [pathname, setPath] = useState(props.pathname);
         const [progress, setProgress] = useState(0);
         const [loading, setLoading] = useState(false);
 
+        const SyncSQL = async () => {
+          try {
+            await sql.connect('Server=192.168.10.50;Database=mmp_hrms;User Id=sa;Password=p@ssw00rd;Encrypt=true');
+            const result = await sql.query`SELECT TOP 20 * FROM dbo.tb_m_Warning`;
+            console.dir(result);
+          } catch (err) {
+            console.log(err);
+          }
+          
+
+        }
 
         // const uploadToServer = async (event) => {
         //   setProgress(0);
@@ -89,6 +102,8 @@ import path from 'path';
                   <Grid item xs={6}>
                     <Button variant="outlined" onClick={() => syncData()}><SyncIcon>Sync</SyncIcon></Button>
                   </Grid>
+                  <Grid item xs={6}></Grid>
+                  <Grid item xs={6}><Button variant="outlined" onClick={() => SyncSQL()}><SyncIcon>Sync</SyncIcon></Button></Grid>
                 </Grid>
           </>          
       )}

@@ -30,7 +30,7 @@ export default async (req, res) => {
 
 
     } catch (e) {
-        // console.log(e.message)
+        console.log(e.message)
         await prisma.$disconnect()
         return res.status(500).json({'message': e.message})
     }   
@@ -52,9 +52,11 @@ const getUser =async () => {
         include:{
             categories:{
                 include: {
-                    category: true
+                    category: true,
                 }
-            }
+            },
+            items: true
+            
         }
     })
     return result
@@ -82,6 +84,7 @@ const write = async (id, values) => {
     delete values['id']; 
     delete values['createdat']
     delete values['password']
+    delete values['item_id'];
     const result = await prisma.user.update({
         where: { id: Number(id)},
         data: values
@@ -96,7 +99,8 @@ const login = async (username, password) => {
             username: username
         },
         include: {
-            categories: true
+            categories: true,
+            items: true
         }
     })
 

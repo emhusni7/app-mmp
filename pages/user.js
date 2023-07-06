@@ -42,6 +42,18 @@ export default function User(props){
         return dtres
     }
 
+    const browseItem = useCallback((val) => async() => {
+        let dtres = []
+        if (val !== undefined){
+            const categs = val.map(x => x.value)
+            const res = await fetch(`${server}/api/item?search=${categs}`)
+            const result = await res.json()
+            dtres = result.map((x) => { return {value: x.id, title: `${x.item_name} ${x.description}`}})
+        }
+        return dtres
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[browseCtg])
+
     // create
     const create = async (values) => {
         
@@ -109,7 +121,7 @@ export default function User(props){
         dispatch({type: 'SET_LOADING', loading: true})
         const res = await fetch(`${server}/api/user?browse=1`)
         const result = await res.json()
-        const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY")}})
+        const dtres = result.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), items: {title: x.items?.description, value: x.item_id},  item_id: undefined}})
         dispatch({type: 'SET_LOADING', loading: false})
         dispatch({type: 'ITEMS_REQUESTED', items: dtres})
     }
@@ -136,6 +148,7 @@ export default function User(props){
                     data={state.data}
                     write={write}
                     getList={browseCtg}
+                    getItem={browseItem}
                     onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})}
         />)
     }
@@ -144,6 +157,7 @@ export default function User(props){
                 mode={state.mode}
                 create={create} 
                 getList={browseCtg}
+                getItem={browseItem}
                 onClose={() => dispatch({'type': 'CHANGE_MODE', mode: 'view'})}
             />)
     //return <div>1</div> 

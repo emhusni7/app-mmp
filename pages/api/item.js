@@ -10,6 +10,9 @@ export default async (req, res) => {
         } else if(req.method === "GET" && req.query.browse){
             const result = await browse(req, res);
             return res.status(200).json(result);
+        } else if (req.method === "GET" && req.query.search) {
+            const result = await search(req, res, req.query.search);
+            return res.status(200).json(result);
         } else if (req.method === "GET" && req.query.delete){
             const result = await unlink(req.query.id);
             return res.status(200).json(result);
@@ -47,12 +50,29 @@ const browse =async (req, res) => {
     }
     } else {
         jsonStr = {
-        orderBy: [{createdat: 'desc'}],
-        include:{
-            categories: true
-        }
+            orderBy: [{createdat: 'desc'}],
+            include:{
+                categories: true
+            }
     }
     }
+    const result = await prisma.item.findMany(jsonStr)
+    return result
+}
+
+
+const search =async (req, res) => {
+   
+    const jsonStr = {
+            where: {
+                categories: {id: {in: eval(req.query.search) }}
+            },
+            orderBy: [{createdat: 'desc'}],
+            include:{
+                categories: true
+            }
+    }
+    
     const result = await prisma.item.findMany(jsonStr)
     return result
 }
@@ -69,7 +89,8 @@ const unlink = async (id) => {
 
 const write = async (id, values) => {
     delete values['id'];
-    delete values['createdat']
+    delete values['createdat'];
+    
     const result = await prisma.item.update({
         where: { id: Number(id)},
         data: values
