@@ -42,7 +42,6 @@ export default function UForm(props){
                     if (!!values.items) {
                         newValue = {...newValue , items: {connect : {id: values.items.value}}}
                     }
-                    alert(JSON.stringify(newValue));
                     const res = await props.create(newValue);
                     if (res.status !== 200){
                         setFieldError('username', ' ')
