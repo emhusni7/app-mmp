@@ -37,7 +37,12 @@ export default function UForm(props){
                         }
                     }))
                 if (mode === 'create'){
-                    const newValue = {...values, categories: {create : newVal}, items: {connect : {id: values.items.value}}}
+                    let newValue = {...values, categories: {create : newVal}, items: undefined}
+                    
+                    if (!!values.items) {
+                        newValue = {...newValue , items: {connect : {id: values.items.value}}}
+                    }
+                    
                     const res = await props.create(newValue);
                     if (res.status !== 200){
                         setFieldError('username', ' ')
