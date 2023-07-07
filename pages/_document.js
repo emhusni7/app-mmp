@@ -33,7 +33,7 @@ export default class MyDocument extends Document {
           <meta property="og:title" content="Cas App" />
           <meta property="og:description" content="Best PWA App in the world" />
           <meta property="og:site_name" content="CAS App" />
-          <meta property="og:url" content="http://localhost:3000" />
+          <meta property="og:url" content="http://localhost:3007" />
           <meta property="og:image" content="https://yourdomain.com/icons/apple-touch-icon.png" />
           {/* Inject MUI styles first to match with the prepend: true configuration. */}
           {this.props.emotionStyleTags}

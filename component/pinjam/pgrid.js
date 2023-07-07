@@ -179,17 +179,7 @@ export default function PGrid(props) {
                   toolbar: ToolbarFunc
                 }}
                 loading={props.loading}
-                sx={{
-                  overflow: 'auto',
-                  '.MuiDataGrid-virtualScroller': {
-                    height: 'auto',
-                    overflow: 'hidden',
-                  },
-                  '.MuiDataGrid-main > div:nth-child(2)': {
-                    overflowY: 'auto !important',
-                    flex: 'unset !important',
-                  },
-                }}
+               
                 autoHeight={true}
                 disableSelectionOnClick
                 disableRowSelectionOnClick
