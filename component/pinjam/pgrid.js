@@ -54,6 +54,7 @@ export default function PGrid(props) {
   const columns = [
     
     { field: 'userid', headerName: 'ID', width: 90 },
+    { field: 'rfid', headerName: 'RFID', width: 90 },
     {
       field: 'username',
       headerName: 'User Name',

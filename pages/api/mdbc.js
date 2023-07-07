@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import fsPromises from 'fs/promises';
 import {IncomingForm} from "formidable";
+import userObj from '../../data/karyawan.json';
+import { prisma } from "../../src/models/db"; 
 
 
 export const config = {
@@ -17,21 +19,52 @@ const dataDir = path.join(process.cwd(), "data");
 // eslint-disable-next-line import/no-anonymous-default-export
 export default async (req, res) => {
     try {
-        if (req.  method === "POST"){
-            await uploadServer(req, res);
-            return res.status(200).json({'message': 'Data has been syncronized'});
+        if (req.method === "POST"){
+            await syncTrans(req, res);
+            // await uploadServer(req, res);
         } else if (req.method === "PUT") {
             await getData(req.body);
-            return  res.status(200).json({'message': 'Data has been syncronized'});
         } else if (req.method === "GET"){
             const path = await getPath();
             return res.status(200).json({path: path})
-            
         }
+        await prisma.$disconnect()
+        return res.status(200).json({'message': 'Data has been syncronized'});
     } catch (e) {
-        return res.status(404).json({'message': 'Data Failed to sync'});
+        await prisma.$disconnect()
+        return res.status(404).json({'message': e.message});
     }
     
+}
+
+const syncTrans = async () => {
+  const result = await prisma.transaction.findMany({
+    where: {
+      OR:[
+        {username: null},
+        {userid: null},
+        {username: ''},
+        {userid: ''},
+      ]
+    }
+  })
+
+  await Promise.all(result.map(async (x) => {
+    const res = userObj.find((usr) => usr.rfid === x.rfid);
+    if (!!res){
+      await prisma.transaction.update({
+        where:{
+          id: x.id
+        },
+        data: {
+          userid: res.id,
+          username: res.name
+        }
+      })
+    }
+  }))
+  
+  return result
 }
 
 const getData = async (req) => {
@@ -41,8 +74,19 @@ const getData = async (req) => {
     reader.getTableNames(); // ['User Info']
     const table = reader.getTable("USERINFO");
     table.getColumnNames(); // ['Badgenumber', 'CardNo', 'Name']
-    const data = table.getData().map((x) => { return {'id': x.Badgenumber, 'name': x.Name, 'rfid': x.CardNo}});
-    const dtJson = JSON.stringify(data);
+    const data = table.getData().map((x) => { 
+      return {'id': x.Badgenumber, 'name': x.Name, 'rfid': x.CardNo}
+    });
+    var newData = [...data, ...userObj];
+    let set = new Set();
+    let unionArray = newData.filter(item => {
+      if (!set.has(item.rfid)) {
+        set.add(item.rfid);
+        return true;
+      }
+      return false;
+    }, set);
+    const dtJson = JSON.stringify(unionArray);
     // Write the updated data to the JSON file
     await fsPromises.writeFile(dataFilePath, dtJson);
     return data;

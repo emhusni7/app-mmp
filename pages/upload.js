@@ -61,6 +61,23 @@ export default function UploadButtons(props) {
           } else {
             props.createNotif('error', data.message)
           }
+        }
+
+        const syncTransaction = async() => {
+          setLoading(true)
+          const res = await fetch("/api/mdbc",{
+            method: "POST",
+            headers:{
+              "Content-Type": 'application/json'
+            }
+          })
+          const data = await res.json();
+          setLoading(false);
+          if (res.status === 200){
+            props.createNotif('success', 'Transaksi Has Been Syncronized')
+          } else {
+            props.createNotif('error', data.message)
+          }
 
         }
 
@@ -102,8 +119,10 @@ export default function UploadButtons(props) {
                   <Grid item xs={6}>
                     <Button variant="outlined" onClick={() => syncData()}><SyncIcon>Sync</SyncIcon></Button>
                   </Grid>
-                  <Grid item xs={6}></Grid>
-                  <Grid item xs={6}><Button variant="outlined" onClick={() => SyncSQL()}><SyncIcon>Sync</SyncIcon></Button></Grid>
+                  <Grid item xs={6}>
+                    <Button variant="outlined" onClick={() => syncTransaction()} fullWidth><SyncIcon></SyncIcon>Sync Transaction</Button>
+                  </Grid>
+                  
                 </Grid>
           </>          
       )}

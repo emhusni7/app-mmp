@@ -53,8 +53,7 @@ function CustomizedInputBase(props){
 export default function PGrid(props) {
 
   const columns = [
-    
-    { field: 'userid', headerName: 'ID', width: 90 },
+    { field: 'userid', headerName: 'UserId', width: 90 },
     {
       field: 'username',
       headerName: 'User Name',

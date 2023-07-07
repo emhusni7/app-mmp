@@ -52,8 +52,8 @@ function CustomizedInputBase(props){
 export default function PGrid(props) {
 
   const columns = [
-    
     { field: 'userid', headerName: 'ID', width: 90 },
+    { field: 'rfid', headerName: 'RFID', width: 120 },
     {
       field: 'username',
       headerName: 'User Name',

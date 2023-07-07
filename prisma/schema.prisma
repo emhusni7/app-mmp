@@ -58,9 +58,9 @@ model Item{
 model Transaction{
   id Int @id @default(autoincrement())
   createdat DateTime @default(now()) @db.Timestamp(0)
-  username String @db.VarChar(50)
+  username String? @db.VarChar(50)
   rfid String @db.VarChar(20)
-  userid String @db.VarChar(10)
+  userid String? @db.VarChar(10)
   items Item @relation(fields: [item_id], references: [id])
   description String? @db.Text
   item_id Int
@@ -69,5 +69,5 @@ model Transaction{
   tgl_pinjam DateTime?
   tgl_kembali DateTime?
   stUniq Int? 
-  @@unique([userid, username, item_id, stUniq])
+  @@unique([rfid, item_id, stUniq])
 }

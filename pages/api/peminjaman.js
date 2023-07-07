@@ -6,7 +6,6 @@ export default async(req, res) => {
     try {
         if (req.body.getUser && req.method === "POST"){
             const result = await getUser(req.body.rfid);
-            // console.log(result)
             if (!!result){
                 return res.status(200).json(result);            
             } else {
@@ -34,11 +33,13 @@ export default async(req, res) => {
 
 const getUser= async (value) => {
     const data = userObj.find((usr) => usr.rfid === value)
-    return data
+    if (!!data){
+        return data;
+    }
+    return {rfid: value, name: '', id: undefined}
 }
 
 const create = async (value) => {
-    
     const result = prisma.transaction.create({
         data: value
     });

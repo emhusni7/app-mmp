@@ -40,6 +40,7 @@ export default function FPinjam(props){
     let initial_val;
     if (mode === 'create'){
         initial_val = { ...props.data}    
+        console.log(initial_val);
     } else if (mode === 'edit'){
         initial_val = {
             id: props.data.id,
@@ -57,9 +58,9 @@ export default function FPinjam(props){
     
     
     const BCSchema = yup.object({
-        userid: yup.number().required("UserId is Required"),
+        userid: yup.number(),
         rfid: yup.string().required("RFID is Required"),
-        username: yup.string().required("Username is Required"),
+        username: yup.string(),
         items: yup.object().required("Item is Required"),
         description: yup.string().required("Desc is Required"),
         //tgl_pinjam: yup.date().required("Date Is Required"),
@@ -112,13 +113,13 @@ export default function FPinjam(props){
                     <Grid container spacing={2}>
                         <FHeader state={!values.id? "Pinjam" : ""} />
                         <Grid item xs={6}>
-                            <TextField variant="standard" value={values.userid} inputProps={{ readOnly: true }} onChange={handleChange} size="small" name="userid" id="userid" fullWidth placeholder="User ID" required />
+                            <TextField variant="standard" value={values.userid}  onChange={handleChange} size="small" name="userid" id="userid" fullWidth placeholder="User ID" />
                         </Grid>
                         <Grid item xs={6}>
                             <TextField variant="standard" value={values.rfid} inputProps={{ readOnly: true }} onChange={handleChange} size="small" name="rfid" id="rfid" fullWidth placeholder="RFID" required />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField variant="standard" onChange={handleChange} value={values.username} size="small" name="username" fullWidth  id="username" placeholder="Username" required />
+                            <TextField variant="standard" onChange={handleChange} value={values.username} size="small" name="username" fullWidth  id="username" placeholder="Username" />
                         </Grid>
                         <Grid item xs={6}>
                         <Autosync 
