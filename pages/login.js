@@ -81,19 +81,97 @@ function LoginForm() {
       <Container component="main" maxWidth={false}>
       <Box
         sx={{
-          margin: 1,
+          
           width: '100%',
           height: '100vh',
-          display: 'flex'
+          display: 'flex',
+          bgcolor: '#77bfea'
         }}
       >
+        <Box
+          sx={{
+            margin: 'auto',
+            bgcolor: '#fff',
+            boxShadow: 1,
+            borderRadius: 2,
+            width: '60%',
+            height: '70%', 
+          }}
+        >
+           <Grid container sx={{height: '100%'}}>
+              <CssBaseline />
+              <Grid
+                item
+                xs={6}
+                sx={{
+                  backgroundImage: "url(/static/mmp.avif)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundColor: (t) =>
+                    t.palette.mode === "light"
+                      ? t.palette.grey[50]
+                      : t.palette.grey[900],
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  alignItems:"stretch",
+                  flexDirection:'row',
+                }}
+              ></Grid>
+          <Grid
+            item
+            xs={6}
+            sx={{
+              p: 10
+            }}
+          >
+              <Typography component="h1" variant="h5">
+                <h2>Sign In</h2>
+              </Typography>
+                <form onSubmit={formik.handleSubmit
+                }>
+              <TextField
+                fullWidth
+                id="username"
+                name="username"
+                variant="outlined"
+                style={{ margin: "0px 0px 10px"}}
+                label="Username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                error={formik.touched.username && Boolean(formik.errors.username)}
+                helperText={formik.touched.username && formik.errors.username}
+              />
+          
+              <TextField
+                fullWidth
+                id="password"
+                name="password"
+                label="Password"
+                type="password"
+                style={{ margin: "0px 0px 10px"}}
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
+              />
+              <div>{formik.isSubmitting ? (<CustomizedProgressBars />) : ("")}</div>
+              <br />
+              <Button color="primary" variant="contained" fullWidth type="submit">
+                Login
+              </Button>
+         
+            </form> 
+           </Grid>
+           </Grid>
+          
+        </Box>
+        {/* 
         <Grid container>
           <CssBaseline />
           <Grid
             item
             xs={false}
-            sm={9}
-            md={9}
+            sm={6}
+            md={6}
             sx={{
               backgroundImage: "url(/static/mmp.jpeg)",
               backgroundRepeat: "no-repeat",
@@ -108,8 +186,8 @@ function LoginForm() {
           <Grid
             item
             xs={12}
-            sm={3}
-            md={3}
+            sm={6}
+            md={6}
             component={Paper}
             elevation={6}
             square
@@ -125,43 +203,44 @@ function LoginForm() {
               <Typography component="h1" variant="h5">
                 <h2>Sign In</h2>
               </Typography>
-        <form onSubmit={formik.handleSubmit
-        }>
-          <TextField
-            fullWidth
-            id="username"
-            name="username"
-            variant="outlined"
-            style={{ margin: "0px 0px 10px"}}
-            label="Username"
-            value={formik.values.username}
-            onChange={formik.handleChange}
-            error={formik.touched.username && Boolean(formik.errors.username)}
-            helperText={formik.touched.username && formik.errors.username}
-          />
+                <form onSubmit={formik.handleSubmit
+                }>
+              <TextField
+                fullWidth
+                id="username"
+                name="username"
+                variant="outlined"
+                style={{ margin: "0px 0px 10px"}}
+                label="Username"
+                value={formik.values.username}
+                onChange={formik.handleChange}
+                error={formik.touched.username && Boolean(formik.errors.username)}
+                helperText={formik.touched.username && formik.errors.username}
+              />
           
-          <TextField
-            fullWidth
-            id="password"
-            name="password"
-            label="Password"
-            type="password"
-            style={{ margin: "0px 0px 10px"}}
-            value={formik.values.password}
-            onChange={formik.handleChange}
-            error={formik.touched.password && Boolean(formik.errors.password)}
-            helperText={formik.touched.password && formik.errors.password}
-          />
-          <div>{formik.isSubmitting ? (<CustomizedProgressBars />) : ("")}</div>
-          <br />
-          <Button color="primary" variant="contained" fullWidth type="submit">
-            Login
-          </Button>
-          {/* <NotificationContainer /> */}
-        </form> 
-        </Box>
+              <TextField
+                fullWidth
+                id="password"
+                name="password"
+                label="Password"
+                type="password"
+                style={{ margin: "0px 0px 10px"}}
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
+              />
+              <div>{formik.isSubmitting ? (<CustomizedProgressBars />) : ("")}</div>
+              <br />
+              <Button color="primary" variant="contained" fullWidth type="submit">
+                Login
+              </Button>
+         
+            </form> 
+            </Box>
           </Grid>
         </Grid>
+         */}
       </Box>
     </Container>
    
