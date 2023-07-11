@@ -81,7 +81,6 @@ function LoginForm() {
       <Container component="main" maxWidth={false}>
       <Box
         sx={{
-          
           width: '100%',
           height: '100vh',
           display: 'flex',
@@ -104,7 +103,7 @@ function LoginForm() {
                 item
                 xs={6}
                 sx={{
-                  backgroundImage: "url(/static/mmp.avif)",
+                  backgroundImage: "url(/static/mmp.jpg)",
                   backgroundRepeat: "no-repeat",
                   backgroundColor: (t) =>
                     t.palette.mode === "light"
