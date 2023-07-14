@@ -103,7 +103,7 @@ function LoginForm() {
                 item
                 xs={6}
                 sx={{
-                  backgroundImage: "url(/static/mmp.jpg)",
+                  backgroundImage: "url(/static/mmp.png)",
                   backgroundRepeat: "no-repeat",
                   backgroundColor: (t) =>
                     t.palette.mode === "light"
