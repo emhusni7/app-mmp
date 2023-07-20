@@ -169,8 +169,6 @@ export default function KGrid(props) {
       }
 
       obj.where = newObj
-
-    
      }
      
     return obj
