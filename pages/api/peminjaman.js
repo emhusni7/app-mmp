@@ -26,7 +26,7 @@ export default async(req, res) => {
             return res.status(200).json(result);
         }
     }catch (e){
-        // console.log(e.message);
+        console.log(e.message);
         res.status(404).json({'message': e.message});
     }
 }
@@ -47,7 +47,6 @@ const create = async (value) => {
 }
 
 const browse =async (where , skip , take, orderBy) => {
-    // console.log(where);
     const [data, count] = await prisma.$transaction([
         prisma.transaction.findMany({skip: skip, take: take, where: where, orderBy: orderBy, include:{
                 items: {
@@ -59,7 +58,6 @@ const browse =async (where , skip , take, orderBy) => {
         }),
         prisma.transaction.count({where})
     ])
-    
     return {
         pagination: { total: count},
         data: data

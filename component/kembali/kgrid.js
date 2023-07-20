@@ -141,11 +141,12 @@ export default function KGrid(props) {
   const getStr = () => {
     var obj = {
       browse: 1,
+     
       where: {
         OR: [
           {
             userid: {
-              contains:value
+              contains: value
             }
           },
           {
@@ -156,16 +157,22 @@ export default function KGrid(props) {
       ],
         tgl_kembali: undefined,
         stUniq: 1,
-        
     }
     }
+    
     if (user.categories.length> 0){
-      obj = {...obj.where, items: {
-        categories: {
-          id: {in: user.categories.map((x) => x.categoryid)}
+      const newObj = {...obj.where, items: {
+          categories: {
+            id: {in: user.categories.map((x) => x.categoryid)}
+          }
         }
-      }}
-    }
+      }
+
+      obj.where = newObj
+
+    
+     }
+     
     return obj
   }
 

@@ -148,7 +148,7 @@ export default function Kembali(props){
                 const dtJson = JSON.parse(state.searchVal)
                 dtJson.take = limit;
                 dtJson.skip = skip;
-                jsonDt = JSON.stringify(dtJson);   
+                jsonDt = JSON.stringify(dtJson);
             } else {
                 if (usrCateg.length > 0){
                     jsonDt = JSON.stringify({
@@ -161,9 +161,7 @@ export default function Kembali(props){
                         browse: 1,
                         include:{
                             items: {
-                                categories: {
-                                    id: {in: usrCateg }
-                                }
+                                categories: true
                             }
                         },
                         skip: skip,
