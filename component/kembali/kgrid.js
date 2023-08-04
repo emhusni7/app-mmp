@@ -141,7 +141,6 @@ export default function KGrid(props) {
   const getStr = () => {
     var obj = {
       browse: 1,
-     
       where: {
         OR: [
           {
@@ -214,7 +213,7 @@ export default function KGrid(props) {
                 height: '90%',
                 }}
             >
-            <Box sx={{ height: 108 + (35 * 20) + 'px'} }>
+            <Box sx={{ height: 250 + (35 * 20) + 'px'} }>
             <DataGrid
                 slots={{
                   toolbar: ToolbarFunc
@@ -226,7 +225,7 @@ export default function KGrid(props) {
                 disableRowSelectionOnClick
                 disableColumnMenu
                 rowHeight={35}
-                rowCount={props.rowCount}
+                rowCount={props.rowLength}
                 rows={props.rows}
                 columns={columns}
                 pageSizeOptions={[20]}

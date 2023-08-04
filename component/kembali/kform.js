@@ -298,7 +298,7 @@ const onFilterChange = (value) => {
                 height: '90%',
                 }}
             >
-            <Box sx={{ height: 108 + (35 * 20) + 'px'} }>
+            <Box sx={{ height: 400 + (35 * 20) + 'px'} }>
               <Grid container> 
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <Grid item xs={3}>

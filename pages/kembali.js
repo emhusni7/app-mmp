@@ -9,7 +9,7 @@ const initialState = {
     mode: 'view',
     items: [],
     rowLength: undefined,
-    paginationModel: {page: 0, pageSize: 25},
+    paginationModel: {page: 0, pageSize: 20},
     searchVal: null,
     loading: false    
 }
@@ -17,6 +17,7 @@ const initialState = {
 const reducer = (state, action) => {
     switch (action.type) {
       case 'ITEMS_REQUESTED':
+        console.log(action.rowLength);
         return {...state, items:action.items, rowLength: action.rowLength}
       case 'ITEMS_DELETED':
         const arr = [...action.items]
