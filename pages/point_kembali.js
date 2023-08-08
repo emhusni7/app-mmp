@@ -9,7 +9,7 @@ const initialState = {
     items: [],
     rowLength: undefined,
     rfid: '',
-    paginationModel: {page: 0, pageSize: 25},
+    paginationModel: {page: 0, pageSize: 20},
     loading: false
 }
 
