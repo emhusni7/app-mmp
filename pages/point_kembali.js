@@ -16,7 +16,7 @@ const initialState = {
 const reducer = (state, action) => {
     switch (action.type) {
       case 'ITEMS_REQUESTED':
-        return {...state, items:action.items}
+        return {...state, items:action.items, rowLength: action.rowLength}
       case 'ITEMS_ADD':
         const data = [...state.items];
         data.unshift(action.item);
