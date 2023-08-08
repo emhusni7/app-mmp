@@ -171,7 +171,7 @@ export default function PGrid(props) {
             >
               {/* <Box sx={{color: '#3f51b5', fontSize: 25, fontWeight: 'bold'}}>PINJAM</Box> */}
         
-            <Box sx={{ height: 250 + (35 * 20) + 'px'} }>
+            <Box sx={{ height: 300 + (35 * 20) + 'px'} }>
             
             <DataGrid
                 slots={{
