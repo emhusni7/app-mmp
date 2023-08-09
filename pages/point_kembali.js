@@ -167,6 +167,7 @@ export default function Kembali(props){
                 body: JSON.stringify(jsonStr)
             })
             const result = await res.json()
+            console.log(result);
             const dtres = result.data.map((x) => { return {...x, createdat: dayjs(x.createdat).format("DD-MM-YYYY"), tgl_pinjam: x.tgl_pinjam, items: x.items.item_name}})
             dispatch({type: 'ITEMS_REQUESTED', items: dtres, rowLength: result.pagination.total})
             dispatch({type: 'SET_LOADING', loading: false})

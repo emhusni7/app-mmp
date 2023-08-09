@@ -164,7 +164,7 @@ export default function PGrid(props) {
                 disableRowSelectionOnClick
                 disableColumnMenu
                 rowHeight={50}
-                rowsCount={props.rowLength}
+                rowCount={props.rowLength}
                 rows={props.rows}
                 columns={columns}
                 pageSizeOptions={[20]}
